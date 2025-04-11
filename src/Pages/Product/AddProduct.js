@@ -78,11 +78,7 @@ function AddProduct() {
           <div className="mt-3">
             <div className="card-body px-2">
               <div className="table-responsive table-invoice">
-                Working on it {dkwb?.map((v, i)=>{
-                    return(
-                        <p>asdv</p>
-                    )
-                })}
+                Working on it 
               </div>
             </div>
           </div>

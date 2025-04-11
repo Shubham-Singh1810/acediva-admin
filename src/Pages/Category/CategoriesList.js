@@ -12,7 +12,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
-import NoRecordFound from "../../Components/NoRecordFound"
+import NoRecordFound from "../../Components/NoRecordFound";
 function CategoriesList() {
   const [list, setList] = useState([]);
   const [statics, setStatics] = useState(null);
@@ -62,6 +62,7 @@ function CategoriesList() {
     status: "",
     show: false,
     imgPrev: "",
+    specialApperence: "",
   });
   const handleAddCategoryFunc = async () => {
     setIsLoading(true);
@@ -69,6 +70,7 @@ function CategoriesList() {
     formData.append("name", addFormData?.name);
     formData.append("image", addFormData?.image);
     formData.append("status", addFormData?.status);
+    formData.append("specialApperence", addFormData?.specialApperence);
     try {
       let response = await addCategoryServ(formData);
       if (response?.data?.statusCode == "200") {
@@ -117,6 +119,7 @@ function CategoriesList() {
     status: "",
     _id: "",
     imgPrev: "",
+    specialApperence: "",
   });
   const handleUpdateCategoryFunc = async () => {
     setIsLoading(true);
@@ -127,6 +130,7 @@ function CategoriesList() {
     formData?.append("name", editFormData?.name);
     formData?.append("status", editFormData?.status);
     formData?.append("_id", editFormData?._id);
+    formData?.append("specialApperence", editFormData?.specialApperence);
     try {
       let response = await updateCategoryServ(formData);
       if (response?.data?.statusCode == "200") {
@@ -192,16 +196,23 @@ function CategoriesList() {
                 <input
                   className="form-control borderRadius24"
                   placeholder="Search"
-                  onChange={(e) => setPayload({ ...payload, searchKey: e.target.value })}
+                  onChange={(e) =>
+                    setPayload({ ...payload, searchKey: e.target.value })
+                  }
                 />
               </div>
             </div>
             <div className="col-lg-3 mb-2  col-md-6 col-12">
               <div>
-                <select className="form-control borderRadius24" onChange={(e) => setPayload({ ...payload, status: e.target.value })}>
-                <option value="">Select Status</option>
-                      <option value={true}>Active</option>
-                      <option value={false}>Inactive</option>
+                <select
+                  className="form-control borderRadius24"
+                  onChange={(e) =>
+                    setPayload({ ...payload, status: e.target.value })
+                  }
+                >
+                  <option value="">Select Status</option>
+                  <option value={true}>Active</option>
+                  <option value={false}>Inactive</option>
                 </select>
               </div>
             </div>
@@ -232,6 +243,7 @@ function CategoriesList() {
                       <th className="text-center py-3">Image</th>
                       <th className="text-center py-3">Category Name</th>
                       <th className="text-center py-3">Status</th>
+                      <th className="text-center py-3">Special Apperence</th>
                       <th className="text-center py-3">Created At</th>
                       <th
                         className="text-center py-3 "
@@ -289,14 +301,23 @@ function CategoriesList() {
                                 </td>
                                 <td className="text-center">
                                   {v?.status ? (
-                                    <div className="badge py-2" style={{background:"#63ED7A"}}>
+                                    <div
+                                      className="badge py-2"
+                                      style={{ background: "#63ED7A" }}
+                                    >
                                       Active
                                     </div>
                                   ) : (
-                                    <div className="badge py-2 " style={{background:"#FFA426"}}>
+                                    <div
+                                      className="badge py-2 "
+                                      style={{ background: "#FFA426" }}
+                                    >
                                       Inactive
                                     </div>
                                   )}
+                                </td>
+                                <td className="font-weight-600 text-center">
+                                  {v?.specialApperence ? v?.specialApperence :"None"}
                                 </td>
                                 <td className="text-center">
                                   {moment(v?.createdAt).format("DD-MM-YY")}
@@ -310,6 +331,7 @@ function CategoriesList() {
                                         imgPrev: v?.image,
                                         status: v?.status,
                                         _id: v?._id,
+                                        specialApperence:v?.specialApperence
                                       });
                                     }}
                                     className="btn btn-info mx-2 text-light shadow-sm"
@@ -339,9 +361,19 @@ function CategoriesList() {
         </div>
       </div>
       {addFormData?.show && (
-        <div className="modal fade show d-flex align-items-center  justify-content-center " tabIndex="-1">
+        <div
+          className="modal fade show d-flex align-items-center  justify-content-center "
+          tabIndex="-1"
+        >
           <div className="modal-dialog">
-            <div className="modal-content" style={{ borderRadius: "16px", background: "#f7f7f5", width: "364px" }}>
+            <div
+              className="modal-content"
+              style={{
+                borderRadius: "16px",
+                background: "#f7f7f5",
+                width: "364px",
+              }}
+            >
               <div className="d-flex justify-content-end pt-4 pb-0 px-4">
                 <img
                   src="https://cdn-icons-png.flaticon.com/128/9068/9068699.png"
@@ -352,6 +384,7 @@ function CategoriesList() {
                       image: "",
                       status: "",
                       show: false,
+                      specialApperence:""
                     })
                   }
                 />
@@ -368,38 +401,92 @@ function CategoriesList() {
                   <div className="w-100 px-2">
                     <h5 className="mb-4">Add Category</h5>
                     <div className="p-3 border rounded mb-2">
-                      {addFormData?.imgPrev ? <img src={addFormData?.imgPrev} className="img-fluid w-100 shadow rounded" />:<p className="mb-0 text-center">No Item Selected !</p>}
-                      
-                      </div>
+                      {addFormData?.imgPrev ? (
+                        <img
+                          src={addFormData?.imgPrev}
+                          className="img-fluid w-100 shadow rounded"
+                        />
+                      ) : (
+                        <p className="mb-0 text-center">No Item Selected !</p>
+                      )}
+                    </div>
                     <label className="">Upload Image</label>
                     <input
                       className="form-control"
                       type="file"
-                      onChange={(e) => setAddFormData({ ...addFormData, image: e.target.files[0], imgPrev: URL.createObjectURL(e.target.files[0])})}
+                      onChange={(e) =>
+                        setAddFormData({
+                          ...addFormData,
+                          image: e.target.files[0],
+                          imgPrev: URL.createObjectURL(e.target.files[0]),
+                        })
+                      }
                     />
                     <label className="mt-3">Name</label>
                     <input
                       className="form-control"
                       type="text"
-                      onChange={(e) => setAddFormData({ ...addFormData, name: e.target.value })}
+                      onChange={(e) =>
+                        setAddFormData({ ...addFormData, name: e.target.value })
+                      }
                     />
                     <label className="mt-3">Status</label>
                     <select
                       className="form-control"
-                      onChange={(e) => setAddFormData({ ...addFormData, status: e.target.value })}
+                      onChange={(e) =>
+                        setAddFormData({
+                          ...addFormData,
+                          status: e.target.value,
+                        })
+                      }
                     >
                       <option value="">Select Status</option>
                       <option value={true}>Active</option>
                       <option value={false}>Inactive</option>
                     </select>
+                    <label className="mt-3">Special Apperence</label>
+                    <select
+                      className="form-control"
+                      onChange={(e) =>
+                        setAddFormData({
+                          ...addFormData,
+                          specialApperence: e.target.value,
+                        })
+                      }
+                      value={addFormData?.specialApperence}
+                    >
+                      <option value="">Select Status</option>
+                      <option value="Home">Home</option>
+                      
+                    </select>
                     <button
-  className="btn btn-success w-100 mt-4"
-  onClick={addFormData?.name && addFormData?.status && addFormData?.image && !isLoading ? handleAddCategoryFunc : undefined}
-  disabled={!addFormData?.name || !addFormData?.status || !addFormData?.image || isLoading}
-  style={{ opacity: !addFormData?.name || !addFormData?.status || !addFormData?.image || isLoading ? "0.5" : "1" }}
->
-  {isLoading ? "Saving..." : "Submit"}
-</button>
+                      className="btn btn-success w-100 mt-4"
+                      onClick={
+                        addFormData?.name &&
+                        addFormData?.status &&
+                        addFormData?.image &&
+                        !isLoading
+                          ? handleAddCategoryFunc
+                          : undefined
+                      }
+                      disabled={
+                        !addFormData?.name ||
+                        !addFormData?.status ||
+                        !addFormData?.image ||
+                        isLoading
+                      }
+                      style={{
+                        opacity:
+                          !addFormData?.name ||
+                          !addFormData?.status ||
+                          !addFormData?.image ||
+                          isLoading
+                            ? "0.5"
+                            : "1",
+                      }}
+                    >
+                      {isLoading ? "Saving..." : "Submit"}
+                    </button>
                   </div>
                 </div>
                 <div className="d-flex justify-content-center"></div>
@@ -410,9 +497,19 @@ function CategoriesList() {
       )}
       {addFormData?.show && <div className="modal-backdrop fade show"></div>}
       {editFormData?._id && (
-        <div className="modal fade show d-flex align-items-center  justify-content-center " tabIndex="-1">
+        <div
+          className="modal fade show d-flex align-items-center  justify-content-center "
+          tabIndex="-1"
+        >
           <div className="modal-dialog">
-            <div className="modal-content" style={{ borderRadius: "16px", background: "#f7f7f5", width: "364px" }}>
+            <div
+              className="modal-content"
+              style={{
+                borderRadius: "16px",
+                background: "#f7f7f5",
+                width: "364px",
+              }}
+            >
               <div className="d-flex justify-content-end pt-4 pb-0 px-4">
                 <img
                   src="https://cdn-icons-png.flaticon.com/128/9068/9068699.png"
@@ -422,6 +519,7 @@ function CategoriesList() {
                       name: "",
                       image: "",
                       status: "",
+                      specialApperence:"",
                       _id: "",
                     })
                   }
@@ -439,37 +537,77 @@ function CategoriesList() {
                   <div className="w-100 px-2">
                     <h5 className="mb-4">Update Category</h5>
                     <div className="p-3 border rounded mb-2">
-                      <img src={editFormData?.imgPrev} className="img-fluid w-100 shadow rounded" />
-                      </div>
+                      <img
+                        src={editFormData?.imgPrev}
+                        className="img-fluid w-100 shadow rounded"
+                      />
+                    </div>
                     <label className="">Upload Image</label>
                     <input
                       className="form-control"
                       type="file"
-                      onChange={(e) => setEditFormData({ ...editFormData, image: e.target.files[0], imgPrev: URL.createObjectURL(e.target.files[0])})}
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          image: e.target.files[0],
+                          imgPrev: URL.createObjectURL(e.target.files[0]),
+                        })
+                      }
                     />
                     <label className="mt-3">Name</label>
                     <input
                       className="form-control"
                       type="text"
-                      onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          name: e.target.value,
+                        })
+                      }
                       value={editFormData?.name}
                     />
                     <label className="mt-3">Status</label>
                     <select
                       className="form-control"
-                      onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}    
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          status: e.target.value,
+                        })
+                      }
                       value={editFormData?.status}
                     >
                       <option value="">Select Status</option>
                       <option value={true}>Active</option>
                       <option value={false}>Inactive</option>
                     </select>
-                    {editFormData?.name && editFormData?.status  ? (
-                      <button className="btn btn-success w-100 mt-4" onClick={!isLoading && handleUpdateCategoryFunc}>
+                    <label className="mt-3">Special Apperence</label>
+                    <select
+                      className="form-control"
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          specialApperence: e.target.value,
+                        })
+                      }
+                      value={editFormData?.specialApperence}
+                    >
+                      <option value="">Select Status</option>
+                      <option value="Home">Home</option>
+                      
+                    </select>
+                    {editFormData?.name && editFormData?.status ? (
+                      <button
+                        className="btn btn-success w-100 mt-4"
+                        onClick={!isLoading && handleUpdateCategoryFunc}
+                      >
                         {isLoading ? "Saving..." : "Submit"}
                       </button>
                     ) : (
-                      <button className="btn btn-success w-100 mt-4" style={{ opacity: "0.5" }}>
+                      <button
+                        className="btn btn-success w-100 mt-4"
+                        style={{ opacity: "0.5" }}
+                      >
                         Submit
                       </button>
                     )}

@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../Components/Sidebar";
 import TopNav from "../../Components/TopNav";
-import {
-  getCategoryServ,
-  addCategoryServ,
-  deleteCategoryServ,
-  updateCategoryServ,
-} from "../../services/category.service";
-import {
-  getVenderListServ
-} from "../../services/vender.services"
+import { getVenderListServ , deleteVendorServ} from "../../services/vender.services";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
-import NoRecordFound from "../../Components/NoRecordFound"
+import NoRecordFound from "../../Components/NoRecordFound";
+import { useNavigate } from "react-router-dom";
 function VendorList() {
+  const navigate = useNavigate();
   const [list, setList] = useState([]);
   const [statics, setStatics] = useState(null);
   const [payload, setPayload] = useState({
@@ -58,8 +52,68 @@ function VendorList() {
   useEffect(() => {
     handleGetVenderFunc();
   }, [payload]);
-
-  
+  const renderStatus = (profileStatus) => {
+    if (profileStatus == "incompleted") {
+      return (
+        <div className="badge py-2" style={{ background: "#FFCA2C" }}>
+          Profile Incompleted
+        </div>
+      );
+    }
+    if (profileStatus == "otpVerified") {
+      return (
+        <div className="badge py-2" style={{ background: "#365B3A" }}>
+          OTP Verified
+        </div>
+      );
+    }
+    if (profileStatus == "storeDetailsCompleted") {
+      return (
+        <div className="badge py-2" style={{ background: "#23532A" }}>
+          Store Details Added
+        </div>
+      );
+    }
+    if (profileStatus == "completed") {
+      return (
+        <div className="badge py-2" style={{ background: "#63ED7A" }}>
+          Profile Completed
+        </div>
+      );
+    }
+    if (profileStatus == "approved") {
+      return (
+        <div className="badge py-2" style={{ background: "#157347" }}>
+          Active
+        </div>
+      );
+    }
+    if (profileStatus == "rejected") {
+      return (
+        <div className="badge py-2" style={{ background: "#FF0000" }}>
+          Rejected
+        </div>
+      );
+    }
+    if (profileStatus == "reUploaded") {
+      return (
+        <div className="badge py-2" style={{ background: "#6777EF" }}>
+          Re Uploaded
+        </div>
+      );
+    }
+  };
+const handleDeleteVenderFunc = async (id)=>{
+  try {
+    let response = await deleteVendorServ(id);
+    if(response?.data?.statusCode=="200"){
+      toast.success(response?.data?.message);
+      handleGetVenderFunc();
+    }
+  } catch (error) {
+    toast.error("Something went wrong")
+  }
+}
   return (
     <div className="bodyContainer">
       <Sidebar selectedMenu="Vendors" selectedItem="Manage Vendors" />
@@ -104,16 +158,23 @@ function VendorList() {
                 <input
                   className="form-control borderRadius24"
                   placeholder="Search"
-                  onChange={(e) => setPayload({ ...payload, searchKey: e.target.value })}
+                  onChange={(e) =>
+                    setPayload({ ...payload, searchKey: e.target.value })
+                  }
                 />
               </div>
             </div>
             <div className="col-lg-3 mb-2  col-md-6 col-12">
               <div>
-                <select className="form-control borderRadius24" onChange={(e) => setPayload({ ...payload, status: e.target.value })}>
-                <option value="">Select Status</option>
-                      <option value={true}>Active</option>
-                      <option value={false}>Inactive</option>
+                <select
+                  className="form-control borderRadius24"
+                  onChange={(e) =>
+                    setPayload({ ...payload, status: e.target.value })
+                  }
+                >
+                  <option value="">Select Status</option>
+                  <option value={true}>Active</option>
+                  <option value={false}>Inactive</option>
                 </select>
               </div>
             </div>
@@ -122,7 +183,6 @@ function VendorList() {
                 <button
                   className="btn btn-primary w-100 borderRadius24"
                   style={{ background: "#6777EF" }}
-                  
                 >
                   Add Vendor
                 </button>
@@ -182,6 +242,12 @@ function VendorList() {
                                 <td className="text-center">
                                   <Skeleton width={100} height={25} />
                                 </td>
+                                <td className="text-center">
+                                  <Skeleton width={100} height={25} />
+                                </td>
+                                <td className="text-center">
+                                  <Skeleton width={100} height={25} />
+                                </td>
                               </tr>
                               <div className="py-2"></div>
                             </>
@@ -211,28 +277,16 @@ function VendorList() {
                                   {v?.phone}
                                 </td>
                                 <td className="text-center">
-                                  {v?.status ? (
-                                    <div className="badge py-2" style={{background:"#63ED7A"}}>
-                                      Active
-                                    </div>
-                                  ) : (
-                                    <div className="badge py-2 " style={{background:"#FFA426"}}>
-                                      Inactive
-                                    </div>
-                                  )}
+                                  {renderStatus(v?.profileStatus)}
                                 </td>
-                                
+
                                 <td className="text-center">
-                                  <a
-                                    
-                                    className="btn btn-info mx-2 text-light shadow-sm"
-                                  >
+                                  <a className="btn btn-info mx-2 text-light shadow-sm" onClick={() => {
+                                      navigate(`/vendor-approval/${v?._id}`);
+                                    }}>
                                     Edit
                                   </a>
-                                  <a
-                                    
-                                    className="btn btn-warning mx-2 text-light shadow-sm"
-                                  >
+                                  <a className="btn btn-warning mx-2 text-light shadow-sm" onClick={()=>handleDeleteVenderFunc(v?._id)}>
                                     Delete
                                   </a>
                                 </td>
@@ -249,7 +303,6 @@ function VendorList() {
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

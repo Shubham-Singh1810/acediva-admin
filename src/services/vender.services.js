@@ -23,9 +23,29 @@ export const getVenderListServ = async (formData) => {
     throw error;
   }
 };
-export const deleteUserServ = async (id) => {
+export const getVendorDetailsServ = async (id) => {
   try {
-    const response = await axios.delete(BASE_URL + "user/delete/"+id);
+    const response = await axios.get(BASE_URL + "vender/details/"+id);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const updateVendorProfile = async (formData) => {
+  try {
+    const response = await axios.put(BASE_URL + "vender/update", formData);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const deleteVendorServ = async (id) => {
+  try {
+    const response = await axios.delete(BASE_URL + "vender/delete/"+id);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
