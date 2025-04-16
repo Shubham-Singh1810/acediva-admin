@@ -135,6 +135,28 @@ function Sidebar({ selectedMenu, selectedItem }) {
         },
       ],
     },
+    {
+      menuIcon: "https://cdn-icons-png.flaticon.com/128/2840/2840215.png",
+      menu: "Support",
+      subMenu: [
+        {
+          name: "FAQs",
+          path: "/faq-user-list",
+        },
+        {
+          name: "Terms & Condition",
+          path: "/user-terms-condition",
+        },
+        {
+          name: "Privacy Policy",
+          path: "/privacy-policy",
+        },
+        {
+          name: "Contact Query",
+          path: "/contact-query",
+        },
+      ],
+    },
   ];
   const [showMenu, setShowMenu] = useState(selectedMenu);
   return (
@@ -193,7 +215,7 @@ function Sidebar({ selectedMenu, selectedItem }) {
                               : " ")
                           }
                         >
-                        <i className="fa fa-circle"/>  {v?.name}
+                          <i className="fa fa-circle" /> {v?.name}
                         </p>
                       );
                     })}

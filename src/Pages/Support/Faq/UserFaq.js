@@ -1,36 +1,35 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../../Components/Sidebar";
-import TopNav from "../../Components/TopNav";
+import Sidebar from "../../../Components/Sidebar";
+import TopNav from "../../../Components/TopNav";
 import {
-  getAttributeServ,
-  addAttributeServ,
-  updateAttributeServ,
-  deleteAttributeServ,
-} from "../../services/attribute.services";
-import { getAttributeSetServ } from "../../services/attributeSet.services";
+  getFaqListServ,
+  addFaqServ,
+  updateFaqServ,
+  deleteFaqServ,
+} from "../../../services/faq.service";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
-import NoRecordFound from "../../Components/NoRecordFound";
-function AttributeList() {
+import NoRecordFound from "../../../Components/NoRecordFound";
+function UserFaq() {
   const [list, setList] = useState([]);
   const [statics, setStatics] = useState(null);
   const [payload, setPayload] = useState({
     searchKey: "",
-    status: "",
+    category: "",
     pageNo: 1,
     pageCount: 10,
     sortByField: "",
   });
   const [showSkelton, setShowSkelton] = useState(false);
-  const handleGetAttributeFunc = async () => {
+  const handleGetFaqFunc = async () => {
     if (list.length == 0) {
       setShowSkelton(true);
     }
     try {
-      let response = await getAttributeServ(payload);
+      let response = await getFaqListServ(payload);
       setList(response?.data?.data);
       setStatics(response?.data?.documentCount);
     } catch (error) {}
@@ -38,53 +37,42 @@ function AttributeList() {
   };
   const staticsArr = [
     {
-      title: "Total Attribute",
-      count: statics?.totalCount,
+      title: "User Faqs",
+      count: statics?.userFaq,
       bgColor: "#6777EF",
     },
     {
-      title: "Active Attribute",
-      count: statics?.activeCount,
+      title: "Driver Faqs",
+      count: statics?.driverFaq,
       bgColor: "#63ED7A",
     },
     {
-      title: "Inactive Attribute",
-      count: statics?.inactiveCount,
+      title: "Vendor Faqs",
+      count: statics?.vendorFaq,
       bgColor: "#FFA426",
     },
   ];
-
+  useEffect(() => {
+    handleGetFaqFunc();
+  }, [payload]);
   const [isLoading, setIsLoading] = useState(false);
   const [addFormData, setAddFormData] = useState({
-    name: "",
-    status: "",
-    value:"",
-    show: false,
-    attributeSetId: "",
+    question: "",
+    answer: "",
+    category: "",
   });
-  const handleAddAttributeFunc = async () => {
+  const handleAddFaqFunc = async () => {
     setIsLoading(true);
     try {
-      // Convert comma-separated string to array of strings (trimmed)
-      const updatedFormData = {
-        ...addFormData,
-        value: addFormData.value
-          .split(",")
-          .map((item) => item.trim())
-          .filter((item) => item !== ""), 
-      };
-  
-      let response = await addAttributeServ(updatedFormData);
+      let response = await addFaqServ(addFormData);
       if (response?.data?.statusCode == "200") {
         toast.success(response?.data?.message);
         setAddFormData({
-          name: "",
-          attributeSetId: "",
-          status: "",
-          show: false,
-          value: "",
+          question: "",
+          answer: "",
+          category: "",
         });
-        handleGetAttributeFunc();
+        handleGetFaqFunc();
       }
     } catch (error) {
       toast.error(
@@ -95,17 +83,16 @@ function AttributeList() {
     }
     setIsLoading(false);
   };
-  
-  const handleDeleteAttributeFunc = async (id) => {
+  const handleDeleteFaqFunc = async (id) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this attribute?"
+      "Are you sure you want to delete this Faq?"
     );
     if (confirmed) {
       try {
-        let response = await deleteAttributeServ(id);
+        let response = await deleteFaqServ(id);
         if (response?.data?.statusCode == "200") {
           toast?.success(response?.data?.message);
-          handleGetAttributeFunc();
+          handleGetFaqFunc();
         }
       } catch (error) {
         toast.error(
@@ -117,32 +104,24 @@ function AttributeList() {
     }
   };
   const [editFormData, setEditFormData] = useState({
-    name: "",
-    attributeSetId: "",
-    status: "",
+    question: "",
+    answer: "",
+    category: "",
     _id: "",
-    value:""
   });
-  const handleUpdateAttributeFunc = async () => {
-    setIsLoading(true);
+  const handleUpdateFaqFunc = async () => {
+    setIsLoading(true); 
     try {
-      const updatedFormData = {
-        ...editFormData,
-        value: editFormData.value
-          .split(",")
-          .map((item) => item.trim())
-          .filter((item) => item !== ""), // to avoid empty strings
-      };
-      let response = await updateAttributeServ(updatedFormData);
+      let response = await updateFaqServ(editFormData);
       if (response?.data?.statusCode == "200") {
         toast.success(response?.data?.message);
         setEditFormData({
-          name: "",
-          attributeSetId: "",
-          status: "",
+          question:"",
+          answer:"",
+          category:"",
           _id: "",
         });
-        handleGetAttributeFunc();
+        handleGetFaqFunc();
       }
     } catch (error) {
       toast.error(
@@ -153,21 +132,41 @@ function AttributeList() {
     }
     setIsLoading(false);
   };
-  const [attributeSetList, setAttributeSetList] = useState([]);
-  const handleGetAttributeSetFunc = async () => {
-    try {
-      let response = await getAttributeSetServ({ status: true });
-      setAttributeSetList(response?.data?.data);
-    } catch (error) {}
+  const renderCategory = (category) => {
+    if (category == "user") {
+      return (
+        <button
+          className="badge"
+          style={{ height: "30px", background: "#6777EF", border:"none" }}
+        >
+          User
+        </button>
+      );
+    }
+    if (category == "driver") {
+      return (
+        <button
+          className="badge"
+          style={{ height: "30px", background: "#63ED7A", border:"none"}}
+        >
+          Driver
+        </button>
+      );
+    }
+    if (category == "vendor") {
+      return (
+        <button
+          className="badge"
+          style={{ height: "30px", background: "#FFA426", border:"none" }}
+        >
+          Vendor
+        </button>
+      );
+    }
   };
-  useEffect(() => {
-    handleGetAttributeFunc();
-    handleGetAttributeSetFunc();
-  }, [payload]);
-  
   return (
     <div className="bodyContainer">
-      <Sidebar selectedMenu="Product Management" selectedItem="Attributes" />
+      <Sidebar selectedMenu="Support" selectedItem="FAQs" />
       <div className="mainContainer">
         <TopNav />
         <div className="p-lg-4 p-md-3 p-2">
@@ -202,7 +201,7 @@ function AttributeList() {
           </div>
           <div className="row m-0 p-0 d-flex align-items-center my-4 topActionForm">
             <div className="col-lg-2 mb-2 col-md-12 col-12">
-              <h3 className="mb-0 text-bold text-secondary">Attributes</h3>
+              <h3 className="mb-0 text-bold text-secondary">FAQs</h3>
             </div>
             <div className="col-lg-4 mb-2 col-md-12 col-12">
               <div>
@@ -220,12 +219,13 @@ function AttributeList() {
                 <select
                   className="form-control borderRadius24"
                   onChange={(e) =>
-                    setPayload({ ...payload, status: e.target.value })
+                    setPayload({ ...payload, category: e.target.value })
                   }
                 >
-                  <option value="">Select Status</option>
-                  <option value={true}>Active</option>
-                  <option value={false}>Inactive</option>
+                  <option value="">Select Category</option>
+                  <option value="user">User</option>
+                  <option value="vendor">Vendor</option>
+                  <option value="driver">Driver</option>
                 </select>
               </div>
             </div>
@@ -236,7 +236,7 @@ function AttributeList() {
                   style={{ background: "#6777EF" }}
                   onClick={() => setAddFormData({ ...addFormData, show: true })}
                 >
-                  Add Attribute
+                  Add Faq
                 </button>
               </div>
             </div>
@@ -253,11 +253,9 @@ function AttributeList() {
                       >
                         Sr. No
                       </th>
-                      <th className="text-center py-3">Name</th>
-                      <th className="text-center py-3">Value</th>
-                      <th className="text-center py-3">Attribute Set</th>
-                      <th className="text-center py-3">Status</th>
-                      <th className="text-center py-3">Created At</th>
+                      <th className="text-center py-3">Question</th>
+                      <th className="text-center py-3">Answer</th>
+                      <th className="text-center py-3">Category</th>
                       <th
                         className="text-center py-3 "
                         style={{ borderRadius: "0px 30px 30px 0px" }}
@@ -275,7 +273,11 @@ function AttributeList() {
                                   <Skeleton width={50} height={50} />
                                 </td>
                                 <td className="text-center">
-                                  <Skeleton width={100} height={25} />
+                                  <Skeleton
+                                    width={50}
+                                    height={50}
+                                    borderRadius={25}
+                                  />
                                 </td>
                                 <td className="text-center">
                                   <Skeleton width={100} height={25} />
@@ -283,9 +285,7 @@ function AttributeList() {
                                 <td className="text-center">
                                   <Skeleton width={100} height={25} />
                                 </td>
-                                <td className="text-center">
-                                  <Skeleton width={100} height={25} />
-                                </td>
+
                                 <td className="text-center">
                                   <Skeleton width={100} height={25} />
                                 </td>
@@ -301,58 +301,32 @@ function AttributeList() {
                                 <td className="text-center">{i + 1}</td>
 
                                 <td className="font-weight-600 text-center">
-                                  {v?.name}
-                                </td>
-                                <td className="font-weight-600 text-center" style={{width:"150px"}}>
-                                  {v?.value?.map((v, i)=>{
-                                    return(
-
-                                      <p className="badge bg-dark mx-1">{v}</p>
-                                    )
-                                  })}
+                                  {v?.question}
                                 </td>
                                 <td className="font-weight-600 text-center">
-                                  {v?.attributeSetId?.name}
+                                  {v?.answer}
                                 </td>
                                 <td className="text-center">
-                                  {v?.status ? (
-                                    <div
-                                      className="badge py-2"
-                                      style={{ background: "#63ED7A" }}
-                                    >
-                                      Active
-                                    </div>
-                                  ) : (
-                                    <div
-                                      className="badge py-2 "
-                                      style={{ background: "#FFA426" }}
-                                    >
-                                      Inactive
-                                    </div>
-                                  )}
+                                  {renderCategory(v?.category)}
                                 </td>
-                                <td className="text-center">
-                                  {moment(v?.createdAt).format("DD-MM-YY")}
-                                </td>
+
                                 <td className="text-center">
                                   <a
-                                   onClick={() => {
-                                    setEditFormData({
-                                      name: v?.name,
-                                      attributeSetId: v?.attributeSetId?._id,
-                                      status: v?.status,
-                                      _id: v?._id,
-                                      value: v?.value?.join(", "), // convert array to comma-separated string
-                                    });
-                                  }}
-                                
+                                    onClick={() => {
+                                      setEditFormData({
+                                        question:v?.question,
+                                        answer:v?.answer,
+                                        category:v?.category,
+                                        _id: v?._id,
+                                      });
+                                    }}
                                     className="btn btn-info mx-2 text-light shadow-sm"
                                   >
                                     Edit
                                   </a>
                                   <a
                                     onClick={() =>
-                                      handleDeleteAttributeFunc(v?._id)
+                                        handleDeleteFaqFunc(v?._id)
                                     }
                                     className="btn btn-warning mx-2 text-light shadow-sm"
                                   >
@@ -392,11 +366,10 @@ function AttributeList() {
                   style={{ height: "20px" }}
                   onClick={() =>
                     setAddFormData({
-                      name: "",
-                      attributeSetId: "",
-                      status: "",
+                      question: "",
+                      answer: "",
+                      category: "",
                       show: false,
-                      value:[]
                     })
                   }
                 />
@@ -411,64 +384,51 @@ function AttributeList() {
                   className="d-flex justify-content-center w-100"
                 >
                   <div className="w-100 px-2">
-                    <h5 className="mb-4">Add Attribute</h5>
+                    <h5 className="mb-4">Add FAQ</h5>
 
-                    <label className="mt-3">Name</label>
+                    <label className="mt-3">Question</label>
                     <input
                       className="form-control"
                       type="text"
                       onChange={(e) =>
-                        setAddFormData({ ...addFormData, name: e.target.value })
+                        setAddFormData({
+                          ...addFormData,
+                          question: e.target.value,
+                        })
                       }
                     />
-                    <label className="mt-3">Values (seperate by coma)</label>
+                    <label className="mt-3">Answer</label>
                     <textarea
                       className="form-control"
                       type="text"
                       onChange={(e) =>
                         setAddFormData({
                           ...addFormData,
-                          value: e.target.value,
+                          answer: e.target.value,
                         })
                       }
-                      value={addFormData?.value}
                     />
-                    
-                    <label className="mt-3">Attribute Set</label>
+                    <label className="mt-3">Category</label>
                     <select
                       className="form-control"
                       onChange={(e) =>
                         setAddFormData({
                           ...addFormData,
-                          attributeSetId: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Select Attribute Set</option>
-                      {attributeSetList?.map((v, i) => {
-                        return <option value={v?._id}>{v?.name}</option>;
-                      })}
-                    </select>
-                    <label className="mt-3">Status</label>
-                    <select
-                      className="form-control"
-                      onChange={(e) =>
-                        setAddFormData({
-                          ...addFormData,
-                          status: e.target.value,
+                          category: e.target.value,
                         })
                       }
                     >
                       <option value="">Select Status</option>
-                      <option value={true}>Active</option>
-                      <option value={false}>Inactive</option>
+                      <option value="user">User</option>
+                      <option value="vendor">Vendor</option>
+                      <option value="driver">Driver</option>
                     </select>
-                    {addFormData?.name &&
-                    addFormData?.status &&
-                    addFormData?.attributeSetId && addFormData?.value ?  (
+                    {addFormData?.question &&
+                    addFormData?.answer &&
+                    addFormData?.category ? (
                       <button
                         className="btn btn-success w-100 mt-4"
-                        onClick={!isLoading && handleAddAttributeFunc}
+                        onClick={!isLoading && handleAddFaqFunc}
                       >
                         {isLoading ? "Saving..." : "Submit"}
                       </button>
@@ -509,9 +469,9 @@ function AttributeList() {
                   style={{ height: "20px" }}
                   onClick={() =>
                     setEditFormData({
-                      name: "",
-                      attributeSetId: "",
-                      status: "",
+                      question:"",
+                      answer:"",
+                      category:"",
                       _id: "",
                     })
                   }
@@ -527,68 +487,53 @@ function AttributeList() {
                   className="d-flex justify-content-center w-100"
                 >
                   <div className="w-100 px-2">
-                    <h5 className="mb-4">Update Attribute</h5>
-                    <label className="mt-3">Name</label>
+                    <h5 className="mb-4">Update Faq</h5>
+                    
+                    
+                    <label className="mt-3">Question</label>
                     <input
                       className="form-control"
                       type="text"
                       onChange={(e) =>
                         setEditFormData({
                           ...editFormData,
-                          name: e.target.value,
+                          question: e.target.value,
                         })
                       }
-                      value={editFormData?.name}
+                      value={editFormData?.question}
                     />
-                    <label className="mt-3">Values (seperate by coma)</label>
+                    <label className="mt-3">Answer</label>
                     <textarea
                       className="form-control"
                       type="text"
                       onChange={(e) =>
                         setEditFormData({
                           ...editFormData,
-                          value: e.target.value,
+                          answer: e.target.value,
                         })
                       }
-                      value={editFormData?.value}
+                      value={editFormData?.answer}
                     />
-                    <label className="mt-3">Attribute Set</label>
+                  <label className="mt-3">Category</label>
                     <select
                       className="form-control"
                       onChange={(e) =>
                         setAddFormData({
                           ...editFormData,
-                          attributeSetId: e.target.value,
+                          category: e.target.value,
                         })
                       }
-                      value={editFormData?.attributeSetId}
-                    >
-                      <option value="">Select Attribute Set</option>
-                      {attributeSetList?.map((v, i) => {
-                        return <option value={v?._id}>{v?.name}</option>;
-                      })}
-                    </select>
-                    <label className="mt-3">Status</label>
-                    <select
-                      className="form-control"
-                      onChange={(e) =>
-                        setEditFormData({
-                          ...editFormData,
-                          status: e.target.value,
-                        })
-                      }
-                      value={editFormData?.status}
+                      value={editFormData?.category}
                     >
                       <option value="">Select Status</option>
-                      <option value={true}>Active</option>
-                      <option value={false}>Inactive</option>
+                      <option value="user">User</option>
+                      <option value="vendor">Vendor</option>
+                      <option value="driver">Driver</option>
                     </select>
-                    {editFormData?.name &&
-                    editFormData?.status &&
-                    editFormData?.attributeSetId ? (
+                    {editFormData?.question && editFormData?.answer && editFormData?.category ? (
                       <button
                         className="btn btn-success w-100 mt-4"
-                        onClick={!isLoading && handleUpdateAttributeFunc}
+                        onClick={!isLoading && handleUpdateFaqFunc}
                       >
                         {isLoading ? "Saving..." : "Submit"}
                       </button>
@@ -613,4 +558,4 @@ function AttributeList() {
   );
 }
 
-export default AttributeList;
+export default UserFaq;

@@ -5,14 +5,17 @@ import {
   getAttributeSetServ,
   addAttributeSetServ,
   updateAttributeSetServ,
-  deleteAttributeSetServ
+  deleteAttributeSetServ,
 } from "../../services/attributeSet.services";
+import {
+getSubCategoryServ,
+} from "../../services/subCategory.service"
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
-import NoRecordFound from "../../Components/NoRecordFound"
+import NoRecordFound from "../../Components/NoRecordFound";
 function AttributeSetList() {
   const [list, setList] = useState([]);
   const [statics, setStatics] = useState(null);
@@ -58,10 +61,9 @@ function AttributeSetList() {
   const [isLoading, setIsLoading] = useState(false);
   const [addFormData, setAddFormData] = useState({
     name: "",
-    image: "",
     status: "",
+    subCategoryId: "",
     show: false,
-    imgPrev: "",
   });
   const handleAddCategoryFunc = async () => {
     setIsLoading(true);
@@ -72,6 +74,7 @@ function AttributeSetList() {
         setAddFormData({
           name: "",
           status: "",
+          subCategoryId: "",
           show: false,
         });
         handleGetCategoryFunc();
@@ -107,10 +110,9 @@ function AttributeSetList() {
   };
   const [editFormData, setEditFormData] = useState({
     name: "",
-    image: "",
     status: "",
+    subCategoryId: "",
     _id: "",
-    imgPrev: "",
   });
   const handleUpdateCategoryFunc = async () => {
     setIsLoading(true);
@@ -120,8 +122,8 @@ function AttributeSetList() {
         toast.success(response?.data?.message);
         setEditFormData({
           name: "",
-          image: "",
           status: "",
+          subCategoryId: "",
           _id: "",
         });
         handleGetCategoryFunc();
@@ -135,9 +137,26 @@ function AttributeSetList() {
     }
     setIsLoading(false);
   };
+  const [subCategoryArr, setSubCategoryArr]=useState([]);
+  const getSubCategoryList =async ()=>{
+    try {
+      let response = await getSubCategoryServ({status:true});
+      if(response?.data?.statusCode=="200"){
+        setSubCategoryArr(response?.data?.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(()=>{
+    getSubCategoryList()
+  }, [])
   return (
     <div className="bodyContainer">
-      <Sidebar selectedMenu="Product Management" selectedItem="Attribute Sets" />
+      <Sidebar
+        selectedMenu="Product Management"
+        selectedItem="Attribute Sets"
+      />
       <div className="mainContainer">
         <TopNav />
         <div className="p-lg-4 p-md-3 p-2">
@@ -179,16 +198,23 @@ function AttributeSetList() {
                 <input
                   className="form-control borderRadius24"
                   placeholder="Search"
-                  onChange={(e) => setPayload({ ...payload, searchKey: e.target.value })}
+                  onChange={(e) =>
+                    setPayload({ ...payload, searchKey: e.target.value })
+                  }
                 />
               </div>
             </div>
             <div className="col-lg-3 mb-2  col-md-6 col-12">
               <div>
-                <select className="form-control borderRadius24" onChange={(e) => setPayload({ ...payload, status: e.target.value })}>
-                <option value="">Select Status</option>
-                      <option value={true}>Active</option>
-                      <option value={false}>Inactive</option>
+                <select
+                  className="form-control borderRadius24"
+                  onChange={(e) =>
+                    setPayload({ ...payload, status: e.target.value })
+                  }
+                >
+                  <option value="">Select Status</option>
+                  <option value={true}>Active</option>
+                  <option value={false}>Inactive</option>
                 </select>
               </div>
             </div>
@@ -216,8 +242,9 @@ function AttributeSetList() {
                       >
                         Sr. No
                       </th>
-                     
+
                       <th className="text-center py-3">Attribute Set Name</th>
+                      <th className="text-center py-3">Sub Category</th>
                       <th className="text-center py-3">Status</th>
                       <th className="text-center py-3">Created At</th>
                       <th
@@ -236,7 +263,10 @@ function AttributeSetList() {
                                 <td className="text-center">
                                   <Skeleton width={50} height={50} />
                                 </td>
-                                
+
+                                <td className="text-center">
+                                  <Skeleton width={100} height={25} />
+                                </td>
                                 <td className="text-center">
                                   <Skeleton width={100} height={25} />
                                 </td>
@@ -259,17 +289,26 @@ function AttributeSetList() {
                             <>
                               <tr>
                                 <td className="text-center">{i + 1}</td>
-                                
+
                                 <td className="font-weight-600 text-center">
                                   {v?.name}
                                 </td>
+                                <td className="font-weight-600 text-center">
+                                  {v?.subCategoryId?.name}
+                                </td>
                                 <td className="text-center">
                                   {v?.status ? (
-                                    <div className="badge py-2" style={{background:"#63ED7A"}}>
+                                    <div
+                                      className="badge py-2"
+                                      style={{ background: "#63ED7A" }}
+                                    >
                                       Active
                                     </div>
                                   ) : (
-                                    <div className="badge py-2 " style={{background:"#FFA426"}}>
+                                    <div
+                                      className="badge py-2 "
+                                      style={{ background: "#FFA426" }}
+                                    >
                                       Inactive
                                     </div>
                                   )}
@@ -284,6 +323,7 @@ function AttributeSetList() {
                                         name: v?.name,
                                         status: v?.status,
                                         _id: v?._id,
+                                        subCategoryId: v?.subCategoryId,
                                       });
                                     }}
                                     className="btn btn-info mx-2 text-light shadow-sm"
@@ -313,9 +353,19 @@ function AttributeSetList() {
         </div>
       </div>
       {addFormData?.show && (
-        <div className="modal fade show d-flex align-items-center  justify-content-center " tabIndex="-1">
+        <div
+          className="modal fade show d-flex align-items-center  justify-content-center "
+          tabIndex="-1"
+        >
           <div className="modal-dialog">
-            <div className="modal-content" style={{ borderRadius: "16px", background: "#f7f7f5", width: "364px" }}>
+            <div
+              className="modal-content"
+              style={{
+                borderRadius: "16px",
+                background: "#f7f7f5",
+                width: "364px",
+              }}
+            >
               <div className="d-flex justify-content-end pt-4 pb-0 px-4">
                 <img
                   src="https://cdn-icons-png.flaticon.com/128/9068/9068699.png"
@@ -323,8 +373,8 @@ function AttributeSetList() {
                   onClick={() =>
                     setAddFormData({
                       name: "",
-                      image: "",
                       status: "",
+                      subCategoryId: "",
                       show: false,
                     })
                   }
@@ -345,23 +395,54 @@ function AttributeSetList() {
                     <input
                       className="form-control"
                       type="text"
-                      onChange={(e) => setAddFormData({ ...addFormData, name: e.target.value })}
+                      onChange={(e) =>
+                        setAddFormData({ ...addFormData, name: e.target.value })
+                      }
                     />
+                    <label className="mt-3">Sub Category</label>
+                    <select
+                      className="form-control"
+                      onChange={(e) =>
+                        setAddFormData({
+                          ...addFormData,
+                          subCategoryId: e.target.value,
+                        })
+                      }
+                      value={addFormData?.subCategoryId}
+                    >
+                      <option value="">Select Status</option>
+                      {subCategoryArr?.map((v, i)=>{
+                        return(
+                          <option value={v?._id}>{v?.name}</option>
+                        )
+                      })}
+                    </select>
                     <label className="mt-3">Status</label>
                     <select
                       className="form-control"
-                      onChange={(e) => setAddFormData({ ...addFormData, status: e.target.value })}
+                      onChange={(e) =>
+                        setAddFormData({
+                          ...addFormData,
+                          status: e.target.value,
+                        })
+                      }
                     >
                       <option value="">Select Status</option>
                       <option value={true}>Active</option>
                       <option value={false}>Inactive</option>
                     </select>
-                    {addFormData?.name && addFormData?.status  ? (
-                      <button className="btn btn-success w-100 mt-4" onClick={!isLoading && handleAddCategoryFunc}>
+                    {addFormData?.name && addFormData?.status ? (
+                      <button
+                        className="btn btn-success w-100 mt-4"
+                        onClick={!isLoading && handleAddCategoryFunc}
+                      >
                         {isLoading ? "Saving..." : "Submit"}
                       </button>
                     ) : (
-                      <button className="btn btn-success w-100 mt-4" style={{ opacity: "0.5" }}>
+                      <button
+                        className="btn btn-success w-100 mt-4"
+                        style={{ opacity: "0.5" }}
+                      >
                         Submit
                       </button>
                     )}
@@ -375,9 +456,19 @@ function AttributeSetList() {
       )}
       {addFormData?.show && <div className="modal-backdrop fade show"></div>}
       {editFormData?._id && (
-        <div className="modal fade show d-flex align-items-center  justify-content-center " tabIndex="-1">
+        <div
+          className="modal fade show d-flex align-items-center  justify-content-center "
+          tabIndex="-1"
+        >
           <div className="modal-dialog">
-            <div className="modal-content" style={{ borderRadius: "16px", background: "#f7f7f5", width: "364px" }}>
+            <div
+              className="modal-content"
+              style={{
+                borderRadius: "16px",
+                background: "#f7f7f5",
+                width: "364px",
+              }}
+            >
               <div className="d-flex justify-content-end pt-4 pb-0 px-4">
                 <img
                   src="https://cdn-icons-png.flaticon.com/128/9068/9068699.png"
@@ -387,6 +478,7 @@ function AttributeSetList() {
                       name: "",
                       image: "",
                       status: "",
+                      subCategoryId: "",
                       _id: "",
                     })
                   }
@@ -407,25 +499,61 @@ function AttributeSetList() {
                     <input
                       className="form-control"
                       type="text"
-                      onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          name: e.target.value,
+                        })
+                      }
                       value={editFormData?.name}
                     />
+                    <label className="mt-3">Sub Category</label>
+                    <select
+                      className="form-control"
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          subCategoryId: e.target.value,
+                        })
+                      }
+                      value={editFormData?.subCategoryId}
+                    >
+                      <option value="">Select Status</option>
+                      {subCategoryArr?.map((v, i)=>{
+                        return(
+                          <option value={v?._id}>{v?.name}</option>
+                        )
+                      })}
+                    </select>
                     <label className="mt-3">Status</label>
                     <select
                       className="form-control"
-                      onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}    
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          status: e.target.value,
+                        })
+                      }
                       value={editFormData?.status}
                     >
                       <option value="">Select Status</option>
                       <option value={true}>Active</option>
                       <option value={false}>Inactive</option>
                     </select>
-                    {editFormData?.name && editFormData?.status  ? (
-                      <button className="btn btn-success w-100 mt-4" onClick={!isLoading && handleUpdateCategoryFunc}>
+                    {editFormData?.name &&
+                    editFormData?.status &&
+                    editFormData?.subCategoryId ? (
+                      <button
+                        className="btn btn-success w-100 mt-4"
+                        onClick={!isLoading && handleUpdateCategoryFunc}
+                      >
                         {isLoading ? "Saving..." : "Submit"}
                       </button>
                     ) : (
-                      <button className="btn btn-success w-100 mt-4" style={{ opacity: "0.5" }}>
+                      <button
+                        className="btn btn-success w-100 mt-4"
+                        style={{ opacity: "0.5" }}
+                      >
                         Submit
                       </button>
                     )}

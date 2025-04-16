@@ -68,8 +68,9 @@ function DriverApproval() {
   useEffect(() => {
     getDriverDetailsFunc();
   }, [params?.id]);
-
+const [loader, setLoader]=useState(false)
   const handleProfileUpdate = async() => {
+    setLoader(true)
     try {
       let response = await updateDriverProfile({...formData, id:params?.id});
       console.log(response?.data?.statusCode)
@@ -80,6 +81,7 @@ function DriverApproval() {
     } catch (error) {
       toast.error("Internal Server Error")
     }
+    setLoader(false)
     
   };
   const updateFormData = ()=>{
@@ -343,17 +345,27 @@ function DriverApproval() {
               </div>
 
               <div className="d-flex justify-content-center mx-3 my-2">
-                <button
-                  className="btn-success"
-                  style={{
-                    borderRadius: "20px",
-                    width: "100%",
-                    opacity: "0.6",
-                  }}
-                  onClick={() => handleProfileUpdate()}
-                >
-                  Submit
-                </button>
+              {loader ?  <button
+              className="btn-success"
+              style={{
+                borderRadius: "20px",
+                width: "100%",
+                opacity: "0.6",
+              }}
+             
+            >
+              Updating ..
+            </button>: <button
+              className="btn-success"
+              style={{
+                borderRadius: "20px",
+                width: "100%",
+                opacity: "0.6",
+              }}
+              onClick={() => handleProfileUpdate()}
+            >
+              Submit
+            </button>}
               </div>
             </div>
           </div>

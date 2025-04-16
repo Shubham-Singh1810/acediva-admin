@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../Components/Sidebar";
 import TopNav from "../../Components/TopNav";
-import { getVenderListServ , deleteVendorServ} from "../../services/vender.services";
+import {
+  getVenderListServ,
+  deleteVendorServ,
+} from "../../services/vender.services";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
@@ -103,17 +106,22 @@ function VendorList() {
       );
     }
   };
-const handleDeleteVenderFunc = async (id)=>{
-  try {
-    let response = await deleteVendorServ(id);
-    if(response?.data?.statusCode=="200"){
-      toast.success(response?.data?.message);
-      handleGetVenderFunc();
+  const handleDeleteVenderFunc = async (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+    if (confirmed) {
+      try {
+        let response = await deleteVendorServ(id);
+        if (response?.data?.statusCode == "200") {
+          toast.success(response?.data?.message);
+          handleGetVenderFunc();
+        }
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
     }
-  } catch (error) {
-    toast.error("Something went wrong")
-  }
-}
+  };
   return (
     <div className="bodyContainer">
       <Sidebar selectedMenu="Vendors" selectedItem="Manage Vendors" />
@@ -173,8 +181,14 @@ const handleDeleteVenderFunc = async (id)=>{
                   }
                 >
                   <option value="">Select Status</option>
-                  <option value={true}>Active</option>
-                  <option value={false}>Inactive</option>
+                  <option value="incompleted">Profile Incomplete</option>
+                  <option value="otpVerified">OTP Verified</option>
+                  <option value="storeDetailsCompleted">Store Details Completed</option>
+                  <option value="completed">Profile Completed</option>
+                  <option value="approved">Active</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="reUploaded">Reuploaded</option>
+                  
                 </select>
               </div>
             </div>
@@ -183,6 +197,7 @@ const handleDeleteVenderFunc = async (id)=>{
                 <button
                   className="btn btn-primary w-100 borderRadius24"
                   style={{ background: "#6777EF" }}
+                  onClick={()=>alert("Work in progress")}
                 >
                   Add Vendor
                 </button>
@@ -281,12 +296,20 @@ const handleDeleteVenderFunc = async (id)=>{
                                 </td>
 
                                 <td className="text-center">
-                                  <a className="btn btn-info mx-2 text-light shadow-sm" onClick={() => {
+                                  <a
+                                    className="btn btn-info  mx-2 text-light shadow-sm"
+                                    onClick={() => {
                                       navigate(`/vendor-approval/${v?._id}`);
-                                    }}>
-                                    Edit
+                                    }}
+                                  >
+                                    View
                                   </a>
-                                  <a className="btn btn-warning mx-2 text-light shadow-sm" onClick={()=>handleDeleteVenderFunc(v?._id)}>
+                                  <a
+                                    className="btn btn-warning mx-2 text-light shadow-sm"
+                                    onClick={() =>
+                                      handleDeleteVenderFunc(v?._id)
+                                    }
+                                  >
                                     Delete
                                   </a>
                                 </td>

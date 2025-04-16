@@ -17,6 +17,14 @@ import ProductManufactureLocactionList from '../Pages/Product/ProductManufacture
 import ProductList from '../Pages/Product/ProductList';
 import AddProduct from '../Pages/Product/AddProduct';
 import VendorApproval from '../Pages/Vendor/VendorApproval';
+import UserFaq from '../Pages/Support/Faq/UserFaq';
+import UserTermsAndCondition from '../Pages/Support/TermsAndCondition/UserTermsAndCondition';
+import ProductUpdateStep2 from '../Pages/Product/ProductUpdateStep2';
+import DriverTermsAndCondition from '../Pages/Support/TermsAndCondition/DriverTermsAndCondition';
+import VendorTermsAndCondition from '../Pages/Support/TermsAndCondition/VendorTermsAndCondition';
+import ProductUpdateStep3 from '../Pages/Product/ProductUpdateStep3';
+import NotificationList from '../Pages/Notification/NotificationList';
+import ProductUpdateAttribute from '../Pages/Product/ProductUpdateAtrribute';
 
 function AuthenticatedRoutes() {
   return (
@@ -61,7 +69,18 @@ function AuthenticatedRoutes() {
         {/* product   */}
         <Route path="/product-list" element={<ProductList/>}/>
         <Route path="/add-product" element={<AddProduct/>}/>
+        <Route path="/update-product-step2/:id" element={<ProductUpdateStep2/>}/>
+        <Route path="/update-product-step3/:id" element={<ProductUpdateStep3/>}/>
+        <Route path="/update-product-attributes/:id" element={<ProductUpdateAttribute/>}/>
         
+        {/* support */}
+        <Route path="/faq-user-list" element={<UserFaq/>}/>
+        <Route path="/user-terms-condition" element={<UserTermsAndCondition/>}/>
+        <Route path="/driver-terms-condition" element={<DriverTermsAndCondition/>}/>
+        <Route path="/vendor-terms-condition" element={<VendorTermsAndCondition/>}/>
+        
+        {/* notification */}
+        <Route path="/notification-list" element={<NotificationList/>}/>
     </Routes>
   )
 }

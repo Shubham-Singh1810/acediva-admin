@@ -172,8 +172,11 @@ function DriverList() {
                   }
                 >
                   <option value="">Select Status</option>
-                  <option value={true}>Active</option>
-                  <option value={false}>Inactive</option>
+                  <option value="approved">Active</option>
+                  <option value="incompleted">Profile Incomplete</option>
+                  <option value="completed">Profile Completed</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="reUploaded">Reuploaded</option>
                 </select>
               </div>
             </div>
@@ -182,6 +185,7 @@ function DriverList() {
                 <button
                   className="btn btn-primary w-100 borderRadius24"
                   style={{ background: "#6777EF" }}
+                  onClick={()=>alert("Work in progress")}
                 >
                   Add Driver
                 </button>
@@ -292,7 +296,7 @@ function DriverList() {
                                     }}
                                     className="btn btn-info mx-2 text-light shadow-sm"
                                   >
-                                    Update
+                                    View
                                   </a>
                                   <a
                                     className="btn btn-warning mx-2 text-light shadow-sm"
