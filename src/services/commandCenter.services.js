@@ -13,9 +13,9 @@ const getConfig = () => {
     },
   };
 };
-export const getProductServ = async (formData) => {
+export const getAdminListServ = async (payload) => {
   try {
-    const response = await axios.post(BASE_URL + "product/list", formData);
+    const response = await axios.post(BASE_URL + "admin/list", payload);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -23,9 +23,9 @@ export const getProductServ = async (formData) => {
     throw error;
   }
 };
-export const getProductDetailsServ = async (id) => {
+export const getRoleListServ = async (payload) => {
   try {
-    const response = await axios.get(BASE_URL + "product/details/"+id);
+    const response = await axios.post(BASE_URL + "role/list", payload);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -33,9 +33,9 @@ export const getProductDetailsServ = async (id) => {
     throw error;
   }
 };
-export const addProductServ = async (formData) => {
+export const getPermissionListServ = async (payload) => {
   try {
-    const response = await axios.post(BASE_URL + "product/create", formData);
+    const response = await axios.post(BASE_URL + "permission/list", payload);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -43,9 +43,9 @@ export const addProductServ = async (formData) => {
     throw error;
   }
 };
-export const updateProductServ = async (formData) => {
+export const addPermissionServ = async (payload) => {
   try {
-    const response = await axios.put(BASE_URL + "product/update", formData);
+    const response = await axios.post(BASE_URL + "permission/create", payload);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -53,9 +53,9 @@ export const updateProductServ = async (formData) => {
     throw error;
   }
 };
-export const deleteProductServ = async (id) => {
+export const deletePermissionServ = async (id) => {
   try {
-    const response = await axios.delete(BASE_URL + "product/delete/"+id);
+    const response = await axios.delete(BASE_URL + "permission/delete/"+id);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -63,9 +63,9 @@ export const deleteProductServ = async (id) => {
     throw error;
   }
 };
-export const updateProductHeroImage = async (formData) => {
+export const updatePermissionServ = async (formData) => {
   try {
-    const response = await axios.put(BASE_URL + "product/update/hero-image", formData);
+    const response = await axios.put(BASE_URL + "permission/update", formData);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -73,9 +73,9 @@ export const updateProductHeroImage = async (formData) => {
     throw error;
   }
 };
-export const updateProductVideoServ = async (formData) => {
+export const deleteRoleServ = async (id) => {
   try {
-    const response = await axios.put(BASE_URL + "product/update-video", formData);
+    const response = await axios.delete(BASE_URL + "role/delete/"+id,  getConfig());
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -83,9 +83,9 @@ export const updateProductVideoServ = async (formData) => {
     throw error;
   }
 };
-export const updateProductGalleryServ = async (formData) => {
+export const getCategoryDetailsServ = async (id) => {
   try {
-    const response = await axios.put(BASE_URL + "product/update/add-product-gallery", formData);
+    const response = await axios.get(BASE_URL + "category/details/"+id);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -93,9 +93,10 @@ export const updateProductGalleryServ = async (formData) => {
     throw error;
   }
 };
-export const deleteProductGalleryServ = async (formData) => {
+
+export const addCategoryServ = async (formData) => {
   try {
-    const response = await axios.post(BASE_URL + "product/delete/product-gallery", formData);
+    const response = await axios.post(BASE_URL + "category/create", formData, getConfig());
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -103,9 +104,20 @@ export const deleteProductGalleryServ = async (formData) => {
     throw error;
   }
 };
-export const getSubcategoryAttributeListServ = async (formData) => {
+
+export const updateCategoryServ = async (formData) => {
   try {
-    const response = await axios.post(BASE_URL + "sub-category/attribute-list", formData);
+    const response = await axios.put(BASE_URL + "category/update", formData, getConfig());
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const deleteCategoryServ = async (id) => {
+  try {
+    const response = await axios.delete(BASE_URL + "category/delete/"+id,  getConfig());
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)

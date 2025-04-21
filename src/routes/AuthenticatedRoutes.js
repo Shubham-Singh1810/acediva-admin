@@ -25,6 +25,9 @@ import VendorTermsAndCondition from '../Pages/Support/TermsAndCondition/VendorTe
 import ProductUpdateStep3 from '../Pages/Product/ProductUpdateStep3';
 import NotificationList from '../Pages/Notification/NotificationList';
 import ProductUpdateAttribute from '../Pages/Product/ProductUpdateAtrribute';
+import RoleList from '../Pages/CommandCenter/RoleList';
+import PermissionList from '../Pages/CommandCenter/PermissionList';
+import AdminList from '../Pages/CommandCenter/AdminList';
 
 function AuthenticatedRoutes() {
   return (
@@ -81,6 +84,11 @@ function AuthenticatedRoutes() {
         
         {/* notification */}
         <Route path="/notification-list" element={<NotificationList/>}/>
+
+        <Route path="/role-list" element={<RoleList/>}/>
+        <Route path="/permission-list" element={<PermissionList/>}/>
+        <Route path="/admin-list" element={<AdminList/>}/>
+
     </Routes>
   )
 }

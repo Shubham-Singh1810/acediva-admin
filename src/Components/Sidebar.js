@@ -136,6 +136,24 @@ function Sidebar({ selectedMenu, selectedItem }) {
       ],
     },
     {
+      menuIcon: "https://cdn-icons-png.flaticon.com/128/59/59130.png",
+      menu: "Command Center",
+      subMenu: [
+        {
+          name: "Admins",
+          path: "/admin-list",
+        },
+        {
+          name: "Roles",
+          path: "/role-list",
+        },
+        {
+          name: "Permissions",
+          path: "/permission-list",
+        },
+      ],
+    },
+    {
       menuIcon: "https://cdn-icons-png.flaticon.com/128/2840/2840215.png",
       menu: "Support",
       subMenu: [
