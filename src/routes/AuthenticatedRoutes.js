@@ -28,6 +28,11 @@ import ProductUpdateAttribute from '../Pages/Product/ProductUpdateAtrribute';
 import RoleList from '../Pages/CommandCenter/RoleList';
 import PermissionList from '../Pages/CommandCenter/PermissionList';
 import AdminList from '../Pages/CommandCenter/AdminList';
+import UserPrivacyPolicy from '../Pages/Support/PrivacyPolicy/UserPrivacyPolicy';
+import DriverPrivacyPolicy from '../Pages/Support/PrivacyPolicy/DriverPrivacyPolicy';
+import VendorPrivacyPolicy from '../Pages/Support/PrivacyPolicy/VendorPrivacyPolicy';
+import ContactQueryList from '../Pages/Support/Contact/ContactQueryList';
+import UserTicketList from '../Pages/SupportTickets/UserTicketList';
 
 function AuthenticatedRoutes() {
   return (
@@ -81,14 +86,21 @@ function AuthenticatedRoutes() {
         <Route path="/user-terms-condition" element={<UserTermsAndCondition/>}/>
         <Route path="/driver-terms-condition" element={<DriverTermsAndCondition/>}/>
         <Route path="/vendor-terms-condition" element={<VendorTermsAndCondition/>}/>
+        <Route path="/user-privacy-policy" element={<UserPrivacyPolicy/>}/>
+        <Route path="/driver-privacy-policy" element={<DriverPrivacyPolicy/>}/>
+        <Route path="/vendor-privacy-policy" element={<VendorPrivacyPolicy/>}/>
+        <Route path="/contact-query" element={<ContactQueryList/>}/>
         
         {/* notification */}
         <Route path="/notification-list" element={<NotificationList/>}/>
-
+        
+        {/* command center */}
         <Route path="/role-list" element={<RoleList/>}/>
         <Route path="/permission-list" element={<PermissionList/>}/>
         <Route path="/admin-list" element={<AdminList/>}/>
-
+        
+        {/* support ticket */}
+        <Route path="/user-ticket-list" element={<UserTicketList/>}/>
     </Routes>
   )
 }

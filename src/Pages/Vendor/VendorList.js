@@ -108,7 +108,7 @@ function VendorList() {
   };
   const handleDeleteVenderFunc = async (id) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this category?"
+      "Are you sure you want to delete this Vendor?"
     );
     if (confirmed) {
       try {

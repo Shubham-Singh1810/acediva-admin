@@ -136,6 +136,25 @@ function Sidebar({ selectedMenu, selectedItem }) {
       ],
     },
     {
+      menuIcon: "https://cdn-icons-png.flaticon.com/128/3472/3472688.png",
+      menu: "Support Tickets",
+      subMenu: [
+        {
+          name: "User Tickets",
+          path: "/user-ticket-list",
+        },
+        {
+          name: "Driver Tickets",
+          path: "/driver-ticket-list",
+        },
+        {
+          name: "Vendor Tickets",
+          path: "/vendor-ticket-list",
+        },
+        
+      ],
+    },
+    {
       menuIcon: "https://cdn-icons-png.flaticon.com/128/59/59130.png",
       menu: "Command Center",
       subMenu: [
@@ -155,7 +174,7 @@ function Sidebar({ selectedMenu, selectedItem }) {
     },
     {
       menuIcon: "https://cdn-icons-png.flaticon.com/128/2840/2840215.png",
-      menu: "Support",
+      menu: "System Support",
       subMenu: [
         {
           name: "FAQs",
@@ -167,7 +186,7 @@ function Sidebar({ selectedMenu, selectedItem }) {
         },
         {
           name: "Privacy Policy",
-          path: "/privacy-policy",
+          path: "/user-privacy-policy",
         },
         {
           name: "Contact Query",
@@ -175,6 +194,7 @@ function Sidebar({ selectedMenu, selectedItem }) {
         },
       ],
     },
+   
   ];
   const [showMenu, setShowMenu] = useState(selectedMenu);
   return (

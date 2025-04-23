@@ -66,9 +66,9 @@ export const deleteFaqServ = async (id) => {
     }
 };
 
-export const getContactListServ = async () => {
+export const getContactListServ = async (payload) => {
   try {
-    const response = await axios.get(BASE_URL + "support/list-contact-query");
+    const response = await axios.post(BASE_URL + "support/list-contact-query", payload);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
