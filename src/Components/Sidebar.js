@@ -151,7 +151,10 @@ function Sidebar({ selectedMenu, selectedItem }) {
           name: "Vendor Tickets",
           path: "/vendor-ticket-list",
         },
-        
+        {
+          name: "Ticket Categories",
+          path: "/ticket-category-list",
+        },
       ],
     },
     {

@@ -33,6 +33,10 @@ import DriverPrivacyPolicy from '../Pages/Support/PrivacyPolicy/DriverPrivacyPol
 import VendorPrivacyPolicy from '../Pages/Support/PrivacyPolicy/VendorPrivacyPolicy';
 import ContactQueryList from '../Pages/Support/Contact/ContactQueryList';
 import UserTicketList from '../Pages/SupportTickets/UserTicketList';
+import DriverTicketList from '../Pages/SupportTickets/DriverTicketList';
+import VendorTicketList from '../Pages/SupportTickets/VendorTicketList';
+import TicketCategoryList from '../Pages/SupportTickets/TicketCategoryList';
+import ChatBox from '../Pages/SupportTickets/ChatBox';
 
 function AuthenticatedRoutes() {
   return (
@@ -101,6 +105,10 @@ function AuthenticatedRoutes() {
         
         {/* support ticket */}
         <Route path="/user-ticket-list" element={<UserTicketList/>}/>
+        <Route path="/driver-ticket-list" element={<DriverTicketList/>}/>
+        <Route path="/vendor-ticket-list" element={<VendorTicketList/>}/>
+        <Route path="/ticket-category-list" element={<TicketCategoryList/>}/>
+        <Route path="/chat-box/:id" element={<ChatBox/>}/>
     </Routes>
   )
 }
