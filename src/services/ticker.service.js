@@ -33,8 +33,6 @@ export const updateTicketServ = async (formData) => {
     throw error;
   }
 };
-
-
 export const getTicketCategoryListServ = async (payload) => {
   try {
     const response = await axios.post(BASE_URL + "ticket-category/list", payload);
@@ -68,6 +66,36 @@ export const ticketUpdateServ = async (payload) => {
 export const ticketDeleteServ = async (id) => {
   try {
     const response = await axios.delete(BASE_URL + "ticket-category/delete/"+ id);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const getTicketDetailsServ = async (id) => {
+  try {
+    const response = await axios.post(BASE_URL + "chat/list/"+id);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const sendMessageServ = async (formData) => {
+  try {
+    const response = await axios.post(BASE_URL + "chat/create", formData);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const updateMessageStatusServ = async (formData) => {
+  try {
+    const response = await axios.put(BASE_URL + "chat/update", formData);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
