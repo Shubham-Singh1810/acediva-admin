@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 function Sidebar({ selectedMenu, selectedItem }) {
   const navigate = useNavigate();
   const { globalState, setGlobalState } = useGlobalState();
+  const [permissions, setPermissions] =useState(globalState?.user?.role?.permissions)
   const navItem = [
     {
       menuIcon: "https://cdn-icons-png.flaticon.com/128/1828/1828791.png",
@@ -197,8 +198,8 @@ function Sidebar({ selectedMenu, selectedItem }) {
         },
       ],
     },
-   
   ];
+
   const [showMenu, setShowMenu] = useState(selectedMenu);
   return (
     <div
@@ -226,7 +227,7 @@ function Sidebar({ selectedMenu, selectedItem }) {
         </div>
         <hr />
         <div className="mt-3 ">
-          {navItem?.map((v, i) => {
+          {navItem?.filter((v) => permissions.includes(v.menu)).map((v, i) => {
             return (
               <div className="mb-4" onClick={() => setShowMenu(v?.menu)}>
                 <div

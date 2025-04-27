@@ -23,9 +23,39 @@ export const getAdminListServ = async (payload) => {
     throw error;
   }
 };
+export const deleteAdminServ = async (id) => {
+  try {
+    const response = await axios.delete(BASE_URL + "admin/delete/"+id);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
 export const getRoleListServ = async (payload) => {
   try {
     const response = await axios.post(BASE_URL + "role/list", payload);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const addRoleServ = async (formData) => {
+  try {
+    const response = await axios.post(BASE_URL + "role/create", formData);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const addAdminServ = async (formData) => {
+  try {
+    const response = await axios.post(BASE_URL + "admin/create", formData);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)
@@ -83,45 +113,4 @@ export const deleteRoleServ = async (id) => {
     throw error;
   }
 };
-export const getCategoryDetailsServ = async (id) => {
-  try {
-    const response = await axios.get(BASE_URL + "category/details/"+id);
-    return response;
-  } catch (error) {
-    // Handle error (e.g., log or throw an error)
-    console.error("Error fetching data:", error);
-    throw error;
-  }
-};
 
-export const addCategoryServ = async (formData) => {
-  try {
-    const response = await axios.post(BASE_URL + "category/create", formData, getConfig());
-    return response;
-  } catch (error) {
-    // Handle error (e.g., log or throw an error)
-    console.error("Error fetching data:", error);
-    throw error;
-  }
-};
-
-export const updateCategoryServ = async (formData) => {
-  try {
-    const response = await axios.put(BASE_URL + "category/update", formData, getConfig());
-    return response;
-  } catch (error) {
-    // Handle error (e.g., log or throw an error)
-    console.error("Error fetching data:", error);
-    throw error;
-  }
-};
-export const deleteCategoryServ = async (id) => {
-  try {
-    const response = await axios.delete(BASE_URL + "category/delete/"+id,  getConfig());
-    return response;
-  } catch (error) {
-    // Handle error (e.g., log or throw an error)
-    console.error("Error fetching data:", error);
-    throw error;
-  }
-};

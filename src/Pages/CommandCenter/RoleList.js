@@ -11,6 +11,7 @@ import {
   getRoleListServ,
   getPermissionListServ,
   deleteRoleServ,
+  addRoleServ,
 } from "../../services/commandCenter.services";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -18,6 +19,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import NoRecordFound from "../../Components/NoRecordFound";
+import Select from "react-select";
 function RoleList() {
   const [list, setList] = useState([]);
   const [statics, setStatics] = useState(null);
@@ -61,29 +63,19 @@ function RoleList() {
   const [isLoading, setIsLoading] = useState(false);
   const [addFormData, setAddFormData] = useState({
     name: "",
-    image: "",
-    status: "",
+    permissions: [],
     show: false,
-    imgPrev: "",
-    specialApperence: "",
   });
-  const handleAddCategoryFunc = async () => {
+  const handleAddRoleFunc = async () => {
     setIsLoading(true);
-    const formData = new FormData();
-    formData.append("name", addFormData?.name);
-    formData.append("image", addFormData?.image);
-    formData.append("status", addFormData?.status);
-    formData.append("specialApperence", addFormData?.specialApperence);
     try {
-      let response = await addCategoryServ(formData);
+      let response = await addRoleServ(addFormData);
       if (response?.data?.statusCode == "200") {
         toast.success(response?.data?.message);
         setAddFormData({
           name: "",
-          image: "",
-          status: "",
+          permissions: [],
           show: false,
-          imgPrev: "",
         });
         handleGetRoleFunc();
       }
@@ -279,7 +271,7 @@ function RoleList() {
                                   {v?.permissions?.map((v, i) => {
                                     return (
                                       <div
-                                        className="badge py-2 mx-2"
+                                        className="badge py-2 mx-2 mb-2"
                                         style={{ background: "#63ED7A" }}
                                       >
                                         {v}
@@ -373,43 +365,41 @@ function RoleList() {
                       }
                     />
                     <label className="mt-3">Permissions (Multiple)</label>
-                    <select
-                      className="form-control"
-                      onChange={(e) =>
+                    <Select
+                      isMulti
+                      options={permissionList?.map((v) => ({
+                        label: v?.name,
+                        value: v?._id,
+                      }))}
+                      onChange={(selectedOptions) =>
                         setAddFormData({
                           ...addFormData,
-                          status: e.target.value,
+                          permissions: selectedOptions.map(
+                            (option) => option.label
+                          ), // only array of string IDs
                         })
                       }
-                    >
-                      <option value="">Select</option>
-                      {permissionList?.map((v, i) => {
-                        return <option value={v?._id}>{v?.name}</option>;
-                      })}
-                    </select>
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                    />
 
                     <button
                       className="btn btn-success w-100 mt-4"
                       onClick={
                         addFormData?.name &&
-                        addFormData?.status &&
-                        addFormData?.image &&
+                        addFormData?.permissions?.length > 0 &&
                         !isLoading
-                          ? handleAddCategoryFunc
+                          ? handleAddRoleFunc
                           : undefined
                       }
                       disabled={
                         !addFormData?.name ||
-                        !addFormData?.status ||
-                        !addFormData?.image ||
-                        isLoading
+                        (addFormData?.permissions?.length > 0 && isLoading)
                       }
                       style={{
                         opacity:
                           !addFormData?.name ||
-                          !addFormData?.status ||
-                          !addFormData?.image ||
-                          isLoading
+                          (addFormData?.permissions?.length > 0 && isLoading)
                             ? "0.5"
                             : "1",
                       }}
