@@ -227,7 +227,7 @@ function Sidebar({ selectedMenu, selectedItem }) {
         </div>
         <hr />
         <div className="mt-3 ">
-          {navItem?.filter((v) => permissions.includes(v.menu)).map((v, i) => {
+          {navItem?.filter((v) => permissions?.includes(v.menu)).map((v, i) => {
             return (
               <div className="mb-4" onClick={() => setShowMenu(v?.menu)}>
                 <div

@@ -296,7 +296,7 @@ function ProductList() {
                                 </td>
 
                                 <td className="text-center">
-                                  <a className="btn btn-info mx-2 text-light shadow-sm">
+                                  <a className="btn btn-info mx-2 text-light shadow-sm" onClick={()=>navigate("/product-approval/"+v?._id)}>
                                     Edit
                                   </a>
                                   <a className="btn btn-warning mx-2 text-light shadow-sm" onClick={()=>handleDeleteProductFunc(v?._id)}>

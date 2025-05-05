@@ -2,8 +2,11 @@ import React from "react";
 import { useGlobalState } from "../GlobalProvider";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {useNavigate} from "react-router-dom"
 function TopNav() {
+  const navigate = useNavigate()
   const { globalState, setGlobalState } = useGlobalState();
+  
   const handleLogoutFunc = () => {
     const confirmed = window.confirm(
       "Are you sure you want to logout?"
@@ -18,6 +21,7 @@ function TopNav() {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("permissions");
+      navigate("/")
     }
     
   };

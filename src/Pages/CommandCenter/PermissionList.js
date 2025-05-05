@@ -15,7 +15,7 @@ function PermissionList() {
   const [payload, setPayload] = useState({
     searchKey: "",
     pageNo: 1,
-    pageCount: 10,
+    pageCount: 20,
     sortByField: "",
   });
   const [showSkelton, setShowSkelton] = useState(false);

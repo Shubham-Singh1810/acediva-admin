@@ -12,6 +12,7 @@ import {
   getPermissionListServ,
   deleteRoleServ,
   addRoleServ,
+  updateRoleServ
 } from "../../services/commandCenter.services";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -27,7 +28,7 @@ function RoleList() {
     searchKey: "",
     status: "",
     pageNo: 1,
-    pageCount: 10,
+    pageCount: 20,
     sortByField: "",
   });
   const [showSkelton, setShowSkelton] = useState(false);
@@ -116,25 +117,16 @@ function RoleList() {
     imgPrev: "",
     specialApperence: "",
   });
-  const handleUpdateCategoryFunc = async () => {
+  const handleUpdateRoleFunc = async () => {
     setIsLoading(true);
-    const formData = new FormData();
-    if (editFormData?.image) {
-      formData?.append("image", editFormData?.image);
-    }
-    formData?.append("name", editFormData?.name);
-    formData?.append("status", editFormData?.status);
-    formData?.append("_id", editFormData?._id);
-    formData?.append("specialApperence", editFormData?.specialApperence);
     try {
-      let response = await updateCategoryServ(formData);
+      let response = await updateRoleServ(editFormData);
       if (response?.data?.statusCode == "200") {
         toast.success(response?.data?.message);
         setEditFormData({
           name: "",
-          image: "",
-          status: "",
-          _id: "",
+          permissions: [],
+          show: false,
         });
         handleGetRoleFunc();
       }
@@ -268,16 +260,25 @@ function RoleList() {
                                   {v?.name}
                                 </td>
                                 <td className="text-center">
-                                  {v?.permissions?.map((v, i) => {
-                                    return (
-                                      <div
-                                        className="badge py-2 mx-2 mb-2"
-                                        style={{ background: "#63ED7A" }}
-                                      >
-                                        {v}
-                                      </div>
-                                    );
-                                  })}
+                                  <div className="dropdown">
+                                    <button
+                                      className="btn btn-secondary btn-sm dropdown-toggle"
+                                      type="button"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      Permissions
+                                    </button>
+                                    <ul className="dropdown-menu ">
+                                      {v?.permissions?.map((item, i) => (
+                                        <li key={i}>
+                                          <span className="dropdown-item">
+                                            {item}
+                                          </span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
                                 </td>
 
                                 <td className="text-center">
@@ -285,11 +286,9 @@ function RoleList() {
                                     onClick={() => {
                                       setEditFormData({
                                         name: v?.name,
-                                        image: "",
-                                        imgPrev: v?.image,
-                                        status: v?.status,
+                                        permissions:v?.permissions,
                                         _id: v?._id,
-                                        specialApperence: v?.specialApperence,
+                                        
                                       });
                                     }}
                                     className="btn btn-info mx-2 text-light shadow-sm"
@@ -337,10 +336,8 @@ function RoleList() {
                   onClick={() =>
                     setAddFormData({
                       name: "",
-                      image: "",
-                      status: "",
+                      permissions: [],
                       show: false,
-                      specialApperence: "",
                     })
                   }
                 />
@@ -436,10 +433,9 @@ function RoleList() {
                   onClick={() =>
                     setEditFormData({
                       name: "",
-                      image: "",
-                      status: "",
-                      specialApperence: "",
-                      _id: "",
+                      permissions: [],
+                      show: false,
+                      _id:""
                     })
                   }
                 />
@@ -454,81 +450,64 @@ function RoleList() {
                   className="d-flex justify-content-center w-100"
                 >
                   <div className="w-100 px-2">
-                    <h5 className="mb-4">Update Category</h5>
-                    <div className="p-3 border rounded mb-2">
-                      <img
-                        src={editFormData?.imgPrev}
-                        className="img-fluid w-100 shadow rounded"
-                      />
-                    </div>
-                    <label className="">Upload Image</label>
-                    <input
-                      className="form-control"
-                      type="file"
-                      onChange={(e) =>
-                        setEditFormData({
-                          ...editFormData,
-                          image: e.target.files[0],
-                          imgPrev: URL.createObjectURL(e.target.files[0]),
-                        })
-                      }
-                    />
+                    <h5 className="mb-4">Update Role</h5>
                     <label className="mt-3">Name</label>
                     <input
                       className="form-control"
                       type="text"
-                      onChange={(e) =>
-                        setEditFormData({
-                          ...editFormData,
-                          name: e.target.value,
-                        })
-                      }
                       value={editFormData?.name}
+                      onChange={(e) =>
+                        setEditFormData({ ...editFormData, name: e.target.value })
+                      }
                     />
-                    <label className="mt-3">Status</label>
-                    <select
-                      className="form-control"
-                      onChange={(e) =>
+                    <label className="mt-3">Permissions (Multiple)</label>
+                    <Select
+                      isMulti
+                      options={permissionList?.map((v) => ({
+                        label: v?.name,
+                        value: v?._id,
+                      }))}
+                      value={permissionList
+                        ?.filter((v) => editFormData?.permissions?.includes(v.name))
+                        .map((v) => ({
+                          label: v.name,
+                          value: v._id,
+                        }))}
+                      onChange={(selectedOptions) =>
                         setEditFormData({
                           ...editFormData,
-                          status: e.target.value,
+                          permissions: selectedOptions.map(
+                            (option) => option.label
+                          ), // only array of string IDs
                         })
                       }
-                      value={editFormData?.status}
-                    >
-                      <option value="">Select Status</option>
-                      <option value={true}>Active</option>
-                      <option value={false}>Inactive</option>
-                    </select>
-                    <label className="mt-3">Special Apperence</label>
-                    <select
-                      className="form-control"
-                      onChange={(e) =>
-                        setEditFormData({
-                          ...editFormData,
-                          specialApperence: e.target.value,
-                        })
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                    />
+
+                    <button
+                      className="btn btn-success w-100 mt-4"
+                      onClick={
+                        editFormData?.name &&
+                        editFormData?.permissions?.length > 0 &&
+                        !isLoading
+                          ? handleUpdateRoleFunc
+                          : undefined
                       }
-                      value={editFormData?.specialApperence}
+                      disabled={
+                        !editFormData?.name ||
+                        (editFormData?.permissions?.length > 0 && isLoading)
+                      }
+                      style={{
+                        opacity:
+                          !editFormData?.name ||
+                          (editFormData?.permissions?.length > 0 && isLoading)
+                            ? "0.5"
+                            : "1",
+                      }}
                     >
-                      <option value="">Select Status</option>
-                      <option value="Home">Home</option>
-                    </select>
-                    {editFormData?.name && editFormData?.status ? (
-                      <button
-                        className="btn btn-success w-100 mt-4"
-                        onClick={!isLoading && handleUpdateCategoryFunc}
-                      >
-                        {isLoading ? "Saving..." : "Submit"}
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-success w-100 mt-4"
-                        style={{ opacity: "0.5" }}
-                      >
-                        Submit
-                      </button>
-                    )}
+                      {isLoading ? "Saving..." : "Submit"}
+                    </button>
                   </div>
                 </div>
                 <div className="d-flex justify-content-center"></div>

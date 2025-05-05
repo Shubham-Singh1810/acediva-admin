@@ -53,9 +53,29 @@ export const addRoleServ = async (formData) => {
     throw error;
   }
 };
+export const updateRoleServ = async (formData) => {
+  try {
+    const response = await axios.put(BASE_URL + "role/update", formData);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
 export const addAdminServ = async (formData) => {
   try {
     const response = await axios.post(BASE_URL + "admin/create", formData);
+    return response;
+  } catch (error) {
+    // Handle error (e.g., log or throw an error)
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+export const updateAdminServ = async (formData) => {
+  try {
+    const response = await axios.put(BASE_URL + "admin/update", formData);
     return response;
   } catch (error) {
     // Handle error (e.g., log or throw an error)

@@ -37,6 +37,8 @@ import DriverTicketList from '../Pages/SupportTickets/DriverTicketList';
 import VendorTicketList from '../Pages/SupportTickets/VendorTicketList';
 import TicketCategoryList from '../Pages/SupportTickets/TicketCategoryList';
 import ChatBox from '../Pages/SupportTickets/ChatBox';
+import ProductApproval from '../Pages/Product/ProductApproval';
+import OrderList from '../Pages/Order/OrderList';
 
 function AuthenticatedRoutes() {
   return (
@@ -81,6 +83,7 @@ function AuthenticatedRoutes() {
         {/* product   */}
         <Route path="/product-list" element={<ProductList/>}/>
         <Route path="/add-product" element={<AddProduct/>}/>
+        <Route path="/product-approval/:id" element={<ProductApproval/>}/>
         <Route path="/update-product-step2/:id" element={<ProductUpdateStep2/>}/>
         <Route path="/update-product-step3/:id" element={<ProductUpdateStep3/>}/>
         <Route path="/update-product-attributes/:id" element={<ProductUpdateAttribute/>}/>
@@ -109,6 +112,9 @@ function AuthenticatedRoutes() {
         <Route path="/vendor-ticket-list" element={<VendorTicketList/>}/>
         <Route path="/ticket-category-list" element={<TicketCategoryList/>}/>
         <Route path="/chat-box/:id" element={<ChatBox/>}/>
+
+        {/* order */}
+        <Route path="/order-list" element={<OrderList/>}/>
     </Routes>
   )
 }
