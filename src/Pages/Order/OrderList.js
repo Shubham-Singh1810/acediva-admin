@@ -7,6 +7,8 @@ import {
   deleteCategoryServ,
   updateCategoryServ,
 } from "../../services/category.service";
+import { getOrderListServ } from "../../services/order.services";
+
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
@@ -18,10 +20,11 @@ function OrderList() {
   const [statics, setStatics] = useState(null);
   const [payload, setPayload] = useState({
     searchKey: "",
-    status: "",
+    deliveryStatus: "",
     pageNo: 1,
     pageCount: 10,
     sortByField: "",
+    // sortByOrder:"asc"
   });
   const [showSkelton, setShowSkelton] = useState(false);
   const handleGetCategoryFunc = async () => {
@@ -29,7 +32,7 @@ function OrderList() {
       setShowSkelton(true);
     }
     try {
-      let response = await getCategoryServ(payload);
+      let response = await getOrderListServ({...payload});
       setList(response?.data?.data);
       setStatics(response?.data?.documentCount);
     } catch (error) {}
@@ -37,17 +40,17 @@ function OrderList() {
   };
   const staticsArr = [
     {
-      title: "Total Category",
+      title: "Today's Order",
       count: statics?.totalCount,
       bgColor: "#6777EF",
     },
     {
-      title: "Active Category",
+      title: "This Week",
       count: statics?.activeCount,
       bgColor: "#63ED7A",
     },
     {
-      title: "Inactive Category",
+      title: "This Month",
       count: statics?.inactiveCount,
       bgColor: "#FFA426",
     },
@@ -152,9 +155,56 @@ function OrderList() {
     }
     setIsLoading(false);
   };
+  const deliveryStatusOptions = [
+  { label: "Select Delivery Status", value: "" },
+  { label: "Order Placed", value: "orderPlaced" },
+  { label: "Order Packed", value: "orderPacked" },
+  { label: "Driver Assigned", value: "driverAssigned" },
+  { label: "Driver Accepted", value: "driverAccepted" },
+  { label: "Picked Order", value: "pickedOrder" },
+  { label: "Completed", value: "completed" },
+  { label: "Cancelled", value: "cancelled" },
+];
+  const renderStatusFunction = (status)=>{
+    if(status=="orderPlaced"){
+      return(
+         "New Request"
+      )
+    }
+    if(status=="orderPacked"){
+      return(
+         "Order Packed"
+      )
+    }
+    if(status=="driverAssigned"){
+      return(
+         "Driver Assigned"
+      )
+    }
+    if(status=="driverAccepted"){
+      return(
+         "Driver Accepted"
+      )
+    }
+    if(status=="pickedOrder"){
+      return(
+         "Out for delivery"
+      )
+    }
+    if(status=="completed"){
+      return(
+         "Completed"
+      )
+    }
+    if(status=="cancelled"){
+      return(
+         "Cancelled"
+      )
+    }
+  }
   return (
     <div className="bodyContainer">
-      <Sidebar selectedMenu="Categories" selectedItem="Main Categories" />
+      <Sidebar selectedMenu="Orders" selectedItem="All Orders" />
       <div className="mainContainer">
         <TopNav />
         <div className="p-lg-4 p-md-3 p-2">
@@ -188,174 +238,143 @@ function OrderList() {
             })}
           </div>
           <div className="row m-0 p-0 d-flex align-items-center my-4 topActionForm">
-            <div className="col-lg-2 mb-2 col-md-12 col-12">
-              <h3 className="mb-0 text-bold text-secondary">Categories</h3>
+            <div className="col-lg-4 mb-2 col-md-12 col-12">
+              <h3 className="mb-0 text-bold text-secondary">Orders</h3>
             </div>
             <div className="col-lg-4 mb-2 col-md-12 col-12">
               <div>
                 <input
                   className="form-control borderRadius24"
-                  placeholder="Search"
+                  placeholder="Search by order id"
                   onChange={(e) =>
                     setPayload({ ...payload, searchKey: e.target.value })
                   }
                 />
               </div>
             </div>
-            <div className="col-lg-3 mb-2  col-md-6 col-12">
+            <div className="col-lg-4 mb-2  col-md-6 col-12">
               <div>
                 <select
                   className="form-control borderRadius24"
                   onChange={(e) =>
-                    setPayload({ ...payload, status: e.target.value })
+                    setPayload({ ...payload, deliveryStatus: e.target.value })
                   }
                 >
-                  <option value="">Select Status</option>
-                  <option value={true}>Active</option>
-                  <option value={false}>Inactive</option>
+                  {/* <option value="">Select Status</option> */}
+                  {deliveryStatusOptions.map((status) => (
+    <option key={status.value} value={status.value}>
+      {status.label}
+    </option>
+  ))}
                 </select>
-              </div>
-            </div>
-            <div className="col-lg-3 mb-2 col-md-6 col-12">
-              <div>
-                <button
-                  className="btn btn-primary w-100 borderRadius24"
-                  style={{ background: "#6777EF" }}
-                  onClick={() => setAddFormData({ ...addFormData, show: true })}
-                >
-                  Add Category
-                </button>
               </div>
             </div>
           </div>
           <div className="mt-3">
             <div className="card-body px-2">
-              <div className="table-responsive table-invoice">
-                <table className="table">
-                  <tbody>
-                    <tr style={{ background: "#F3F3F3", color: "#000" }}>
-                      <th
-                        className="text-center py-3"
-                        style={{ borderRadius: "30px 0px 0px 30px" }}
-                      >
-                        Sr. No
-                      </th>
-                      <th className="text-center py-3">Image</th>
-                      <th className="text-center py-3">Category Name</th>
-                      <th className="text-center py-3">Status</th>
-                      <th className="text-center py-3">Special Apperence</th>
-                      <th className="text-center py-3">Created At</th>
-                      <th
-                        className="text-center py-3 "
-                        style={{ borderRadius: "0px 30px 30px 0px" }}
-                      >
-                        Action
-                      </th>
-                    </tr>
-                    <div className="py-2"></div>
-                    {showSkelton
-                      ? [1, 2, 3, 4, 5, 6, 7, 8, 9]?.map((v, i) => {
-                          return (
+              {list?.map((v, i) => {
+                return (
+                  <div className="row px-2 pe-3 py-3 orderMainCard m-0 mb-4 shadow">
+                    <div className="row col-5 m-0 p-0">
+                      <div className="col-6 m-0">
+                        <div className=" p-2 bg-light mb-2 boxCart" >
+                          <p>
+                            <b>User Details</b>
+                          </p>
+                          <div className="d-flex align-items-center">
+                            <div>
+                              <img
+                                src={
+                                  v?.userId?.profilePic
+                                    ? v?.userId?.profilePic
+                                    : "https://cdn-icons-png.flaticon.com/128/149/149071.png"
+                                }
+                                style={{
+                                  height: "50px",
+                                  width: "50px",
+                                  borderRadius: "50px",
+                                }}
+                              />
+                            </div>
+                            <div className="ms-2">
+                              <p className="mb-0" style={{ fontSize: "14px" }}>
+                                {v?.userId?.firstName +
+                                  " " +
+                                  v?.userId?.lastName}
+                              </p>
+                              <p className="mb-0" style={{ fontSize: "14px" }}>
+                                Phone : {v?.userId?.phone}
+                              </p>
+                            </div>
+                          </div>
+                          <hr className="my-1" />
+                          <p>
+                            <b>Address</b>
+                          </p>
+                          <p>
+                            {v?.addressId?.area}, {v?.addressId?.landmark},{" "}
+                            {v?.addressId?.city}, {v?.addressId?.pincode},{" "}
+                            {v?.addressId?.state}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="col-6 m-0">
+                        <div className=" p-2 bg-light boxCart" >
+                          <p>
+                            <b>Order</b> : {v?._id?.substring(0, 10)}
+                          </p>
+                          <p>
+                            <b>Total Amount</b>: {v?.totalAmount}
+                          </p>
+                          <hr className="my-1" />
+                          <p>
+                            <b>Mode Of Payment</b> : {v?.modeOfPayment}
+                          </p>
+                          {v?.modeOfPayment == "Online" && (
                             <>
-                              <tr key={i}>
-                                <td className="text-center">
-                                  <Skeleton width={50} height={50} />
-                                </td>
-                                <td className="text-center">
-                                  <Skeleton
-                                    width={50}
-                                    height={50}
-                                    borderRadius={25}
-                                  />
-                                </td>
-                                <td className="text-center">
-                                  <Skeleton width={100} height={25} />
-                                </td>
-                                <td className="text-center">
-                                  <Skeleton width={100} height={25} />
-                                </td>
-                                <td className="text-center">
-                                  <Skeleton width={100} height={25} />
-                                </td>
-                                <td className="text-center">
-                                  <Skeleton width={100} height={25} />
-                                </td>
-                              </tr>
-                              <div className="py-2"></div>
+                              <p>
+                                <b>Signature</b>: {v?.signature}
+                              </p>
+                              <p>
+                                <b>Payment ID</b>: {v?.paymentId}
+                              </p>
+                              <p>
+                                <b>Order ID</b>: {v?.orderId}
+                              </p>
                             </>
-                          );
-                        })
-                      : list?.map((v, i) => {
-                          return (
-                            <>
-                              <tr>
-                                <td className="text-center">{i + 1}</td>
-                                <td className="text-center">
-                                  <img
-                                    src={v?.image}
-                                    style={{ height: "30px" }}
-                                  />
-                                </td>
-                                <td className="font-weight-600 text-center">
-                                  {v?.name}
-                                </td>
-                                <td className="text-center">
-                                  {v?.status ? (
-                                    <div
-                                      className="badge py-2"
-                                      style={{ background: "#63ED7A" }}
-                                    >
-                                      Active
-                                    </div>
-                                  ) : (
-                                    <div
-                                      className="badge py-2 "
-                                      style={{ background: "#FFA426" }}
-                                    >
-                                      Inactive
-                                    </div>
-                                  )}
-                                </td>
-                                <td className="font-weight-600 text-center">
-                                  {v?.specialApperence ? v?.specialApperence :"None"}
-                                </td>
-                                <td className="text-center">
-                                  {moment(v?.createdAt).format("DD-MM-YY")}
-                                </td>
-                                <td className="text-center">
-                                  <a
-                                    onClick={() => {
-                                      setEditFormData({
-                                        name: v?.name,
-                                        image: "",
-                                        imgPrev: v?.image,
-                                        status: v?.status,
-                                        _id: v?._id,
-                                        specialApperence:v?.specialApperence
-                                      });
-                                    }}
-                                    className="btn btn-info mx-2 text-light shadow-sm"
-                                  >
-                                    Edit
-                                  </a>
-                                  <a
-                                    onClick={() =>
-                                      handleDeleteCategoryFunc(v?._id)
-                                    }
-                                    className="btn btn-warning mx-2 text-light shadow-sm"
-                                  >
-                                    Delete
-                                  </a>
-                                </td>
-                              </tr>
-                              <div className="py-2"></div>
-                            </>
-                          );
-                        })}
-                  </tbody>
-                </table>
-                {list.length == 0 && !showSkelton && <NoRecordFound />}
-              </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-7 ">
+                      {v?.product?.map((value, i) => {
+                        return (
+                          <div className=" ">
+                            <div className={"flatCart d-flex row justify-content-between align-items-center  py-3 pb-4 " + (i%2 ==0 ? "bg-light text-dark": "text-light bg-dark")} style={{marginTop:i* -15+"px", borderRadius:i+1==v?.product?.length ? "20px": "20px 20px 0px 0px"}}>
+                              <p className="col-1">{i + 1}.</p>
+
+                              <p className="col-2">{value?.productId?.name}</p>
+                              <p className="col-3">
+                                Quantity : {value?.quantity}
+                              </p>
+                              <p className="col-4">
+                                Total Price : {value?.totalPrice}
+                              </p>
+                              <p className="col-2">
+                                <span className="">
+                                  {renderStatusFunction(value?.deliveryStatus)}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                    </div>
+                  </div>
+                );
+              })}
+              {list.length == 0 && !showSkelton && <NoRecordFound />}
             </div>
           </div>
         </div>
@@ -384,7 +403,7 @@ function OrderList() {
                       image: "",
                       status: "",
                       show: false,
-                      specialApperence:""
+                      specialApperence: "",
                     })
                   }
                 />
@@ -457,7 +476,6 @@ function OrderList() {
                     >
                       <option value="">Select Status</option>
                       <option value="Home">Home</option>
-                      
                     </select>
                     <button
                       className="btn btn-success w-100 mt-4"
@@ -495,6 +513,7 @@ function OrderList() {
           </div>
         </div>
       )}
+      
       {addFormData?.show && <div className="modal-backdrop fade show"></div>}
       {editFormData?._id && (
         <div
@@ -519,7 +538,7 @@ function OrderList() {
                       name: "",
                       image: "",
                       status: "",
-                      specialApperence:"",
+                      specialApperence: "",
                       _id: "",
                     })
                   }
@@ -594,7 +613,6 @@ function OrderList() {
                     >
                       <option value="">Select Status</option>
                       <option value="Home">Home</option>
-                      
                     </select>
                     {editFormData?.name && editFormData?.status ? (
                       <button

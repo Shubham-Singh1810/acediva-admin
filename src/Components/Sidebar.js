@@ -21,9 +21,25 @@ function Sidebar({ selectedMenu, selectedItem }) {
       menu: "Orders",
       subMenu: [
         {
-          name: "Orders",
+          name: "All Orders",
           path: "/order-list",
         },
+        {
+          name: "New Orders",
+          path: "/order-list",
+        },
+        {
+          name: "Track Orders",
+          path: "/order-list",
+        },
+        {
+          name: "Completed Orders",
+          path: "/order-list",
+        },
+        {
+          name: "Cancelled Orders",
+          path: "/order-list",
+        }
       ],
     },
     {
