@@ -34,11 +34,11 @@ function Sidebar({ selectedMenu, selectedItem }) {
         },
         {
           name: "Completed Orders",
-          path: "/order-list",
+          path: "/complete-order-list",
         },
         {
           name: "Cancelled Orders",
-          path: "/order-list",
+          path: "/cancel-order-list",
         }
       ],
     },

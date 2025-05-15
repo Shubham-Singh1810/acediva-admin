@@ -15,12 +15,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import NoRecordFound from "../../Components/NoRecordFound";
-function OrderList() {
+function CompletedOrderList() {
   const [list, setList] = useState([]);
   const [statics, setStatics] = useState(null);
   const [payload, setPayload] = useState({
     searchKey: "",
-    deliveryStatus: "",
+    deliveryStatus: "completed",
     pageNo: 1,
     pageCount: 10,
     sortByField: "",
@@ -190,7 +190,7 @@ function OrderList() {
   };
   return (
     <div className="bodyContainer">
-      <Sidebar selectedMenu="Orders" selectedItem="All Orders" />
+      <Sidebar selectedMenu="Orders" selectedItem="Completed Orders" />
       <div className="mainContainer">
         <TopNav />
         <div className="p-lg-4 p-md-3 p-2">
@@ -225,9 +225,11 @@ function OrderList() {
           </div>
           <div className="row m-0 p-0 d-flex align-items-center my-4 topActionForm">
             <div className="col-lg-4 mb-2 col-md-12 col-12">
-              <h3 className="mb-0 text-bold text-secondary">Orders</h3>
+              <h3 className="mb-0 text-bold text-secondary">
+                Completed Orders
+              </h3>
             </div>
-            <div className="col-lg-4 mb-2 col-md-12 col-12">
+            {/* <div className="col-lg-4 mb-2 col-md-12 col-12">
               <div>
                 <input
                   className="form-control borderRadius24"
@@ -237,158 +239,153 @@ function OrderList() {
                   }
                 />
               </div>
-            </div>
-            <div className="col-lg-4 mb-2  col-md-6 col-12">
-              <div>
-                <select
-                  className="form-control borderRadius24"
-                  onChange={(e) =>
-                    setPayload({ ...payload, deliveryStatus: e.target.value })
-                  }
-                >
-                  {/* <option value="">Select Status</option> */}
-                  {deliveryStatusOptions.map((status) => (
-                    <option key={status.value} value={status.value}>
-                      {status.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            </div> */}
           </div>
           <div className="mt-3">
             <div className="card-body px-2">
-              {showSkelton ? [1, 2, 3, 4]?.map((v, i)=>{
-                return(
-                  <div className="row px-2 pe-3 py-3 orderMainCard m-0 mb-4 shadow">
-                    <div className="row col-5 m-0 p-0">
-                      <div className="col-6 m-0">
-                       <Skeleton height={200}/>
+              {showSkelton
+                ? [1, 2, 3, 4]?.map((v, i) => {
+                    return (
+                      <div className="row px-2 pe-3 py-3 orderMainCard m-0 mb-4 shadow">
+                        <div className="row col-5 m-0 p-0">
+                          <div className="col-6 m-0">
+                            <Skeleton height={200} />
+                          </div>
+                          <div className="col-6 m-0">
+                            <Skeleton height={200} />
+                          </div>
+                        </div>
+                        <div className="col-7 ">
+                          <Skeleton height={200} />
+                        </div>
                       </div>
-                      <div className="col-6 m-0">
-                        <Skeleton height={200}/>
-                      </div>
-                    </div>
-                    <div className="col-7 ">
-                      <Skeleton height={200}/>
-                    </div>
-                  </div>
-                )
-              }) : list?.map((v, i) => {
-                return (
-                  <div className="row px-2 pe-3 py-3 orderMainCard m-0 mb-4 shadow">
-                    <div className="row col-5 m-0 p-0">
-                      <div className="col-6 m-0">
-                        <div className=" p-2 bg-light mb-2 boxCart">
-                          <p>
-                            <b>User Details</b>
-                          </p>
-                          <div className="d-flex align-items-center">
-                            <div>
-                              <img
-                                src={
-                                  v?.userId?.profilePic
-                                    ? v?.userId?.profilePic
-                                    : "https://cdn-icons-png.flaticon.com/128/149/149071.png"
-                                }
-                                style={{
-                                  height: "50px",
-                                  width: "50px",
-                                  borderRadius: "50px",
-                                }}
-                              />
-                            </div>
-                            <div className="ms-2">
-                              <p className="mb-0" style={{ fontSize: "14px" }}>
-                                {v?.userId?.firstName +
-                                  " " +
-                                  v?.userId?.lastName}
+                    );
+                  })
+                : list?.map((v, i) => {
+                    return (
+                      <div className="row px-2 pe-3 py-3 orderMainCard m-0 mb-4 shadow">
+                        <div className="row col-5 m-0 p-0">
+                          <div className="col-6 m-0">
+                            <div className=" p-2 bg-light mb-2 boxCart">
+                              <p>
+                                <b>User Details</b>
                               </p>
-                              <p className="mb-0" style={{ fontSize: "14px" }}>
-                                Phone : {v?.userId?.phone}
+                              <div className="d-flex align-items-center">
+                                <div>
+                                  <img
+                                    src={
+                                      v?.userId?.profilePic
+                                        ? v?.userId?.profilePic
+                                        : "https://cdn-icons-png.flaticon.com/128/149/149071.png"
+                                    }
+                                    style={{
+                                      height: "50px",
+                                      width: "50px",
+                                      borderRadius: "50px",
+                                    }}
+                                  />
+                                </div>
+                                <div className="ms-2">
+                                  <p
+                                    className="mb-0"
+                                    style={{ fontSize: "14px" }}
+                                  >
+                                    {v?.userId?.firstName +
+                                      " " +
+                                      v?.userId?.lastName}
+                                  </p>
+                                  <p
+                                    className="mb-0"
+                                    style={{ fontSize: "14px" }}
+                                  >
+                                    Phone : {v?.userId?.phone}
+                                  </p>
+                                </div>
+                              </div>
+                              <hr className="my-1" />
+                              <p>
+                                <b>Address</b>
+                              </p>
+                              <p>
+                                {v?.addressId?.area}, {v?.addressId?.landmark},{" "}
+                                {v?.addressId?.city}, {v?.addressId?.pincode},{" "}
+                                {v?.addressId?.state}
                               </p>
                             </div>
                           </div>
-                          <hr className="my-1" />
-                          <p>
-                            <b>Address</b>
-                          </p>
-                          <p>
-                            {v?.addressId?.area}, {v?.addressId?.landmark},{" "}
-                            {v?.addressId?.city}, {v?.addressId?.pincode},{" "}
-                            {v?.addressId?.state}
-                          </p>
+                          <div className="col-6 m-0">
+                            <div className=" p-2 bg-light boxCart">
+                              <p>
+                                <b>Order</b> : {v?._id?.substring(0, 10)}
+                              </p>
+                              <p>
+                                <b>Total Amount</b>: {v?.totalAmount}
+                              </p>
+                              <hr className="my-1" />
+                              <p>
+                                <b>Mode Of Payment</b> : {v?.modeOfPayment}
+                              </p>
+                              {v?.modeOfPayment == "Online" && (
+                                <>
+                                  <p>
+                                    <b>Signature</b>: {v?.signature}
+                                  </p>
+                                  <p>
+                                    <b>Payment ID</b>: {v?.paymentId}
+                                  </p>
+                                  <p>
+                                    <b>Order ID</b>: {v?.orderId}
+                                  </p>
+                                </>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="col-6 m-0">
-                        <div className=" p-2 bg-light boxCart">
-                          <p>
-                            <b>Order</b> : {v?._id?.substring(0, 10)}
-                          </p>
-                          <p>
-                            <b>Total Amount</b>: {v?.totalAmount}
-                          </p>
-                          <hr className="my-1" />
-                          <p>
-                            <b>Mode Of Payment</b> : {v?.modeOfPayment}
-                          </p>
-                          {v?.modeOfPayment == "Online" && (
-                            <>
-                              <p>
-                                <b>Signature</b>: {v?.signature}
-                              </p>
-                              <p>
-                                <b>Payment ID</b>: {v?.paymentId}
-                              </p>
-                              <p>
-                                <b>Order ID</b>: {v?.orderId}
-                              </p>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-7 ">
-                      {v?.product?.map((value, i) => {
-                        return (
-                          <div className=" ">
-                            <div
-                              className={
-                                "flatCart d-flex row justify-content-between align-items-center  py-3 pb-4 " +
-                                (i % 2 == 0
-                                  ? " bg-light text-dark "
-                                  : " text-light bg-primary ")
-                              }
-                              style={{
-                                marginTop: i * -10 + "px",
-                                borderRadius:
-                                  i + 1 == v?.product?.length
-                                    ? "20px"
-                                    : "20px 20px 0px 0px",
-                              }}
-                            >
-                              <p className="col-1">{i + 1}.</p>
+                        <div className="col-7 ">
+                          {v?.product?.map((value, i) => {
+                            return (
+                              <div className=" ">
+                                <div
+                                  className={
+                                    "flatCart d-flex row justify-content-between align-items-center  py-3 pb-4 " +
+                                    (i % 2 == 0
+                                      ? "bg-light text-dark"
+                                      : "text-light bg-primary")
+                                  }
+                                  style={{
+                                    marginTop: i * -15 + "px",
+                                    borderRadius:
+                                      i + 1 == v?.product?.length
+                                        ? "20px"
+                                        : "20px 20px 0px 0px",
+                                  }}
+                                >
+                                  <p className="col-1">{i + 1}.</p>
 
-                              <p className="col-2">{value?.productId?.name}</p>
-                              <p className="col-3">
-                                Quantity : {value?.quantity}
-                              </p>
-                              <p className="col-4">
-                                Total Price : {value?.totalPrice}
-                              </p>
-                              <p className="col-2">
-                                <span className="">
-                                  {renderStatusFunction(value?.deliveryStatus)}
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+                                  <p className="col-2">
+                                    {value?.productId?.name}
+                                  </p>
+                                  <p className="col-3">
+                                    Quantity : {value?.quantity}
+                                  </p>
+                                  <p className="col-4">
+                                    Total Price : {value?.totalPrice}
+                                  </p>
+                                  <p className="col-2">
+                                    <span className="">
+                                      {renderStatusFunction(
+                                        value?.deliveryStatus
+                                      )}
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
               {list.length == 0 && !showSkelton && <NoRecordFound />}
             </div>
           </div>
@@ -657,4 +654,4 @@ function OrderList() {
   );
 }
 
-export default OrderList;
+export default CompletedOrderList;

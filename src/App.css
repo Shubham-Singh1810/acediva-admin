@@ -224,9 +224,7 @@ button {
   background-color: gainsboro;
   border-radius: 20px;
 }
-.flatCart{
-  /* border-radius: 20px 20px 0px 0px; */
-}
+
 .flatCart p{
   margin-bottom: 0px;
   font-size: 13px;

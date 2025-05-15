@@ -39,6 +39,8 @@ import TicketCategoryList from '../Pages/SupportTickets/TicketCategoryList';
 import ChatBox from '../Pages/SupportTickets/ChatBox';
 import ProductApproval from '../Pages/Product/ProductApproval';
 import OrderList from '../Pages/Order/OrderList';
+import CompletedOrderList from '../Pages/Order/CompletedOrderList';
+import CancelledOrderList from '../Pages/Order/CancelledOrderList';
 
 function AuthenticatedRoutes() {
   return (
@@ -115,6 +117,8 @@ function AuthenticatedRoutes() {
 
         {/* order */}
         <Route path="/order-list" element={<OrderList/>}/>
+        <Route path="/complete-order-list" element={<CompletedOrderList/>}/>
+        <Route path="/cancel-order-list" element={<CancelledOrderList/>}/>
     </Routes>
   )
 }
