@@ -41,6 +41,7 @@ import ProductApproval from '../Pages/Product/ProductApproval';
 import OrderList from '../Pages/Order/OrderList';
 import CompletedOrderList from '../Pages/Order/CompletedOrderList';
 import CancelledOrderList from '../Pages/Order/CancelledOrderList';
+import TrackOrderList from '../Pages/Order/TrackOrderList';
 
 function AuthenticatedRoutes() {
   return (
@@ -119,6 +120,7 @@ function AuthenticatedRoutes() {
         <Route path="/order-list" element={<OrderList/>}/>
         <Route path="/complete-order-list" element={<CompletedOrderList/>}/>
         <Route path="/cancel-order-list" element={<CancelledOrderList/>}/>
+        <Route path="/track-order-list" element={<TrackOrderList/>}/>
     </Routes>
   )
 }

@@ -30,7 +30,7 @@ function Sidebar({ selectedMenu, selectedItem }) {
         },
         {
           name: "Track Orders",
-          path: "/order-list",
+          path: "/track-order-list",
         },
         {
           name: "Completed Orders",
